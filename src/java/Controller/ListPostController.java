@@ -102,7 +102,7 @@ public class ListPostController extends HttpServlet {
         request.setAttribute("sortBy", sortBy);
         request.setAttribute("sortOrder", sortOrder);
         request.setAttribute("isSuccess", request.getParameter("isSuccess"));
-        
+
         request.getRequestDispatcher("/list-post.jsp").forward(request, response);
     }
 
