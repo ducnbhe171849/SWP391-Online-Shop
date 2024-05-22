@@ -210,8 +210,8 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="postImgURL">Thumbnail Link:</label>
-                                <input type="text" class="form-control" id="postImgURL" name="imgURL" required>
+                                <label for="postImgURLUpdate">Thumbnail Link:</label>
+                                <input type="text" class="form-control" id="postImgURLUpdate" name="imgURL" required>
                             </div>
                             <div class="form-group">
                                 <label for="postTitle">Title</label>
