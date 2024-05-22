@@ -82,7 +82,10 @@ public class PostDetailController extends HttpServlet {
                 + "\"content\":\"" + post.getContent() + "\","
                 + "\"isDeleted\":\"" + post.isIsDeleted() + "\","
                 + "\"createdAt\":\"" + post.getCreatedAt() + "\","
+<<<<<<< HEAD
                 + "\"imgURL\":\"" + post.getImgURL()+ "\","
+=======
+>>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                 + "\"createdBy\":\"" + post.getAuthorName()+ "\""
                 + "}]";
 
