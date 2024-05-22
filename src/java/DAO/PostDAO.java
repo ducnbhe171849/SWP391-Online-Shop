@@ -33,11 +33,7 @@ public class PostDAO extends DBContext {
     public List<Post> getPosts(int page, int pageSize, String category, String author, String status, String search, String sortBy, String sortOrder) {
         List<Post> posts = new ArrayList<>();
         int offset = (page - 1) * pageSize;
-<<<<<<< HEAD
         StringBuilder query = new StringBuilder("SELECT po.ID, po.[CategoryId], po.Title, po.Content, po.IsDeleted, po.CreatedAt, po.imgURL, u.Fullname as AuthorName "
-=======
-        StringBuilder query = new StringBuilder("SELECT po.ID, po.[CategoryId], po.Title, po.Content, po.IsDeleted, po.CreatedAt, u.Fullname as AuthorName "
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                 + "FROM [dbo].[Post] po "
                 + "JOIN [dbo].[User] u ON po.CreatedBy = u.ID "
                 + "JOIN [dbo].[Category] c ON po.CategoryId = c.ID "
@@ -89,10 +85,7 @@ public class PostDAO extends DBContext {
                 Timestamp createdAt = rs.getTimestamp("CreatedAt");
                 String authorName = rs.getString("AuthorName");
                 Post post = new Post(id, categoryId, title, content, isDeleted, createdAt, authorName);
-<<<<<<< HEAD
                 post.setImgURL(rs.getString("imgURL"));
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                 posts.add(post);
             }
         } catch (SQLException e) {
@@ -150,13 +143,7 @@ public class PostDAO extends DBContext {
     public List<Category> getUniqueCategories() {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT DISTINCT c.ID, c.Name "
-<<<<<<< HEAD
                 + "FROM [dbo].[Category] c "
-=======
-                + "FROM [dbo].[Post] po "
-                + "JOIN [dbo].[Category] c "
-                + "ON po.CategoryId = c.ID "
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                 + "WHERE c.IsDeleted = 0";
 
         try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
@@ -186,22 +173,14 @@ public class PostDAO extends DBContext {
         return authors;
     }
 
-<<<<<<< HEAD
     public boolean createPost(String title, String content, String category, int createdBy, String imgURL) {
         String query = "INSERT INTO [dbo].[Post] (Title, Content, categoryid, IsDeleted, CreatedAt, CreatedBy, imgURL) VALUES (?, ?, ?, 0, GETDATE(), ?, ?)";
-=======
-    public boolean createPost(String title, String content, String category, int createdBy) {
-        String query = "INSERT INTO [dbo].[Post] (Title, Content, categoryid, IsDeleted, CreatedAt, CreatedBy) VALUES (?, ?, ?, 0, GETDATE(), ?)";
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
         try (PreparedStatement stmt = connection.prepareStatement(query);) {
             stmt.setString(1, title);
             stmt.setString(2, content);
             stmt.setInt(3, Integer.parseInt(category));
             stmt.setInt(4, createdBy);
-<<<<<<< HEAD
             stmt.setString(5, imgURL);
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -217,11 +196,7 @@ public class PostDAO extends DBContext {
     public Post getPostById(int postId) {
         Post post = new Post();
         // SQL query to retrieve post by ID
-<<<<<<< HEAD
         String query = "SELECT po.ID as PostID, CategoryId, Title, Content, po.IsDeleted, po.CreatedAt, po.CreatedBy, po.imgURL, u.Fullname as AuthorName "
-=======
-        String query = "SELECT po.ID as PostID, CategoryId, Title, Content, po.IsDeleted, po.CreatedAt, po.CreatedBy, u.Fullname as AuthorName "
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                 + "FROM [dbo].[Post] po "
                 + "JOIN [dbo].[User] u ON po.CreatedBy = u.ID "
                 + "WHERE po.ID = ?";
@@ -243,10 +218,7 @@ public class PostDAO extends DBContext {
                 // Create Post object
                 post = new Post(postId, categoryId, title, content, isDeleted, createdAt, createdBy);
                 post.setAuthorName(authorName);
-<<<<<<< HEAD
                 post.setImgURL(rs.getString("imgURL"));
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -257,25 +229,15 @@ public class PostDAO extends DBContext {
     }
     
     
-<<<<<<< HEAD
     public boolean updatePost(int postId, String title, String content, int categoryId, String imgURL) {
         // SQL query to update the post
             String query = "UPDATE [dbo].[Post] SET Title = ?, Content = ?, CategoryId = ?, imgURL = ? WHERE ID = ?";
-=======
-    public boolean updatePost(int postId, String title, String content, int categoryId) {
-        // SQL query to update the post
-            String query = "UPDATE [dbo].[Post] SET Title = ?, Content = ?, CategoryId = ? WHERE ID = ?";
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
         try (PreparedStatement stmt = connection.prepareStatement(query);){
             stmt.setString(1, title);
             stmt.setString(2, content);
             stmt.setInt(3, categoryId);
-<<<<<<< HEAD
             stmt.setString(4, imgURL);
             stmt.setInt(5, postId);
-=======
-            stmt.setInt(4, postId);
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 
             // Execute the update query
             int rowsUpdated = stmt.executeUpdate();

@@ -22,10 +22,7 @@ public class Post {
     private Timestamp createdAt;
     private int createdBy;
     private String authorName; 
-<<<<<<< HEAD
     private String imgURL;
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 
     // Constructor
     public Post(int id, int categoryId, String title, String content, boolean isDeleted, Timestamp createdAt, int createdBy, String authorName) {
@@ -129,7 +126,6 @@ public class Post {
         return new CategoryDAO().getCategoryNameById(categoryId);
     }
 
-<<<<<<< HEAD
     public String getImgURL() {
         return imgURL;
     }
@@ -139,8 +135,6 @@ public class Post {
     }
     
 
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
     @Override
     public String toString() {
         return "Post{" + "id=" + id + ", categoryId=" + categoryId + ", title=" + title + ", content=" + content + ", isDeleted=" + isDeleted + ", createdAt=" + createdAt + ", createdBy=" + createdBy + ", authorName=" + authorName + '}';

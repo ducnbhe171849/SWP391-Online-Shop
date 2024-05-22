@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-=======
-<%-- 
-    Document   : list-post
-    Created on : May 20, 2024, 4:20:58 PM
-    Author     : Legion
---%>
-
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -59,7 +50,6 @@
                         <div class="col-12">
                             <h1 class="color-gray border-bottom pb-3">Post Management</h1>
                             <div class="card mt-4 p-3">
-<<<<<<< HEAD
                                 <c:if test="${isSuccess ne null && isSuccess}">
                                     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
                                         <strong>Save success!</strong> You should check in on some of those fields below.
@@ -72,8 +62,6 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
                                 </c:if>
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                 <div class="card-header">
                                     List post
                                 </div>
@@ -123,16 +111,9 @@
                                                     <label for="sortBy">Sort By:</label>
                                                     <select id="sortBy" name="sortBy" class="form-control">
                                                         <option value="title" ${param.sortBy == 'title' ? 'selected' : ''}>Title</option>
-<<<<<<< HEAD
                                                         <option value="CategoryId" ${param.sortBy == 'CategoryId' ? 'selected' : ''}>Category</option>
                                                         <option value="AuthorName" ${param.sortBy == 'AuthorName' ? 'selected' : ''}>Author</option>
                                                         <option value="IsDeleted" ${param.sortBy == 'IsDeleted' ? 'selected' : ''}>Status</option>
-=======
-                                                        <option value="category" ${param.sortBy == 'category' ? 'selected' : ''}>Category</option>
-                                                        <option value="author" ${param.sortBy == 'author' ? 'selected' : ''}>Author</option>
-                                                        <option value="featured" ${param.sortBy == 'featured' ? 'selected' : ''}>Featured</option>
-                                                        <option value="status" ${param.sortBy == 'status' ? 'selected' : ''}>Status</option>
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                                     </select>
                                                 </div>
                                             </td>
@@ -160,10 +141,7 @@
                                     <thead class="text-bold">
                                         <tr>
                                             <td>#</td>
-<<<<<<< HEAD
                                             <td>Thumbnail</td>
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                             <td>Title</td>
                                             <td>Brief</td>
                                             <td>Category</td>
@@ -176,10 +154,7 @@
                                         <c:forEach var="post" items="${posts}">
                                             <tr>
                                                 <td>${post.id}</td>
-<<<<<<< HEAD
                                                 <td><img src="${post.imgURL}" alt="alt" width="100px" height="100px"/></td>
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                                 <td>${post.title}</td>
                                                 <td>${fn:substring(post.content, 0, 50)}...</td>
                                                 <td>
@@ -216,22 +191,7 @@
                                             </c:if>
                                     </ul>
                                 </nav>
-<<<<<<< HEAD
                                 
-=======
-                                <c:if test="${isSuccess ne null && isSuccess}">
-                                    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
-                                        <strong>Save success!</strong> You should check in on some of those fields below.
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                </c:if>
-                                <c:if test="${isSuccess ne null && !isSuccess}">
-                                    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="mess">
-                                        <strong>Save failed!</strong> You should check in on some of those fields below.
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                </c:if>
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 
                             </div>
                         </div>
@@ -250,13 +210,10 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-<<<<<<< HEAD
                                 <label for="postImgURL">Thumbnail Link:</label>
                                 <input type="text" class="form-control" id="postImgURL" name="imgURL" required>
                             </div>
                             <div class="form-group">
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                 <label for="postTitle">Title</label>
                                 <input type="text" class="form-control" id="postTitle" name="title" required>
                             </div>
@@ -314,13 +271,10 @@
                                 <input type="text" class="form-control" id="createdBy" name="createdBy" readonly style="background-color: #e6e6e6">
                             </div>
                             <div class="form-group">
-<<<<<<< HEAD
                                 <label for="postImgURLUpdate">Thumbnail Link:</label>
                                 <input type="text" class="form-control" id="postImgURLUpdate" name="imgURL" required>
                             </div>
                             <div class="form-group">
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                 <label for="postCategoryEdit">Category</label>
                                 <select class="form-control" id="postCategoryEdit" name="category" required>
                                     <c:forEach var="cat" items="${categories}">
@@ -352,10 +306,7 @@
                                 document.getElementById('postContentEdit').value = post.content;
                                 document.getElementById('createdAt').value = post.createdAt;
                                 document.getElementById('createdBy').value = post.createdBy;
-<<<<<<< HEAD
                                 document.getElementById('postImgURLUpdate').value = post.imgURL;
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
                                 
 
                                 let listCategory = document.getElementsByClassName('cateOption');

@@ -4,19 +4,13 @@
  */
 package DAO;
 
-<<<<<<< HEAD
 import Model.Category;
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 /**
  *
  * @author Legion
@@ -53,7 +47,6 @@ public class CategoryDAO extends DBContext{
 
         return null;
     }
-<<<<<<< HEAD
     public List<Category> getCategories() {
         List<Category> categories = new ArrayList<>();
 
@@ -75,6 +68,4 @@ public class CategoryDAO extends DBContext{
 
         return categories;
     }
-=======
->>>>>>> a03d548db6004320f5b2601bdd44e244008a6de3
 }

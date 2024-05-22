@@ -72,7 +72,7 @@ public class AddPostController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         // Get the form data
-         String title = request.getParameter("title");
+        String title = request.getParameter("title");
         String content = request.getParameter("content");
         String category = request.getParameter("category");
         String imgURL = request.getParameter("imgURL");
