@@ -9,11 +9,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Home Page</title>
+        <title>List Product Page</title>
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="../css/styles.css" rel="stylesheet" />
     </head>
     <body>
         <jsp:include page="header.jsp"></jsp:include>
@@ -29,7 +29,18 @@
             <!-- Section-->
             <section class="py-5">
                 <div class="container px-4 px-lg-5 mt-5">
-                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <!-- Search and Filter Form -->
+                    <form action="list-product" method="get" class="d-flex mb-4">
+                        <input class="form-control me-2" type="search" name="searchQuery" placeholder="Search" aria-label="Search" value="${searchQuery}">
+                    <select class="form-select me-2" name="categoryId">
+                        <option value="">All Categories</option>
+                        <c:forEach items="${categories}" var="category">
+                            <option value="${category.ID}" <c:if test="${categoryId == category.ID}">selected</c:if>>${category.categoryName}</option>
+                        </c:forEach>
+                    </select>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     <c:forEach items="${products}" var="p">
                         <div class="col mb-5">
                             <div class="card h-100">
@@ -60,18 +71,21 @@
                                 </div>
                                 <!-- Product actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="public/product-detail?id=${p.productId}">View details</a></div>
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="product-detail?id=${p.productId}">View details</a></div>
                                 </div>
                             </div>
                         </div>
                     </c:forEach> 
                 </div>
-                <div class="row mb-5 ">
-                    <form action="home" class="d-flex text-center justify-content-center align-items-lg-center">
-                        <button style="margin-right: 10px; width: fit-content"class="btn btn-primary">Go to Page:</button> 
-                        <input class="form-control" oninput="valid(this)" style="width: 30px; font-size: 15px; padding: 5px; height: 25px; margin-right: 5px"  type="input" name="page" value="${page}" pattern="\d{1,}" title="Enter number"> /  ${endPage}
+                <!-- Pagination -->
+                <div class="row mb-5">
+                    <form action="list-product" method="get" class="d-flex text-center justify-content-center align-items-lg-center">
+                        <input type="hidden" name="searchQuery" value="${searchQuery}">
+                        <input type="hidden" name="categoryId" value="${categoryId}">
+                        <button style="margin-right: 10px; width: fit-content" class="btn btn-primary">Go to Page:</button>
+                        <input class="form-control" oninput="valid(this)" style="width: 30px; font-size: 15px; padding: 5px; height: 25px; margin-right: 5px" pattern="\d{1,}" title="Enter number" type="text" name="page" value="${page}" min="1" max="${endPage}">
+                        / ${endPage}
                     </form>
-
                 </div>
             </div>
         </section>
@@ -79,13 +93,15 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+        <script src="../js/scripts.js"></script>
 
         <script>
             function valid(input) {
-                input.value= input.value.replace(/[^0-9]/g, '');
-                if(input.value > ${endPage}) input.value = ${endPage};
-                if(input.value < 1) input.value = 1;
+                input.value = input.value.replace(/[^0-9]/g, '');
+                if (input.value > ${endPage})
+                    input.value = ${endPage};
+                if (input.value < 1)
+                    input.value = 1;
             }
         </script>
         <!-- đáy -->
