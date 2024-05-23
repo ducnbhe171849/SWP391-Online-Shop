@@ -1,23 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
-public class User {
-
+public class Staff {
     private int id;
-    private String username;
+    private String email;
     private String password;
     private String fullname;
     private String gender;
     private String address;
     private String phone;
+    private int role;
     private boolean isDeleted;
-    private LocalDateTime createdAt;
+    private Date createdAt;
     private int createdBy;
+    private String avatar;
 
     public int getId() {
         return id;
@@ -27,12 +24,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -75,6 +72,14 @@ public class User {
         this.phone = phone;
     }
 
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
     public boolean isIsDeleted() {
         return isDeleted;
     }
@@ -83,11 +88,11 @@ public class User {
         this.isDeleted = isDeleted;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -97,6 +102,30 @@ public class User {
 
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+    
+    public void setRoleInt(String role) {
+        if (role == "Admin") this.role = 1;
+        if (role == "Marketing") this.role = 2;
+        if (role == "Sale") this.role = 3;
+        if (role == "Sale leader") this.role = 4;
+        if (role == "User") this.role = 5;
+    }
+    
+    public String getRoleString() {
+        if (this.role == 1) return "Admin";
+        if (this.role == 2) return "Marketing";
+        if (this.role == 3) return "Sale";
+        if (this.role == 4) return "Sale leader";
+        return "User";
     }
 
 }
