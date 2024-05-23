@@ -4,8 +4,9 @@
  */
 package Controller;
 
-import DAO.UserDAO;
-import Model.User;
+import DAO.PostDAO;
+import Model.Category;
+import Model.Post;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,13 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
- * @author lvhn1
+ * @author Legion
  */
-@WebServlet(name = "ChangePasswordControl", urlPatterns = {"/change-password"})
-public class ChangePasswordControl extends HttpServlet {
+@WebServlet(name = "ListPostController", urlPatterns = {"/marketing/list-post"})
+public class ListPostController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +40,10 @@ public class ChangePasswordControl extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ChangePasswordControl</title>");
+            out.println("<title>Servlet ListPostController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ChangePasswordControl at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ListPostController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,7 +61,49 @@ public class ChangePasswordControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        int PAGE_SIZE = 10;
+        int page = 1;
+        String pageStr = request.getParameter("page");
+        if (pageStr != null && !pageStr.isEmpty()) {
+            page = Integer.parseInt(pageStr);
+        }
+
+        // Get filtering and sorting parameters
+        String category = request.getParameter("category");
+        String author = request.getParameter("author");
+        String status = request.getParameter("status");
+        String search = request.getParameter("search");
+        String sortBy = request.getParameter("sortBy");
+        String sortOrder = request.getParameter("sortOrder");
+
+        // Fetch posts for the requested page with filters and sorting
+        PostDAO postDAO = new PostDAO();
+        List<Post> posts = postDAO.getPosts(page, PAGE_SIZE, category, author, status, search, sortBy, sortOrder);
+
+        // Get the total number of posts for pagination
+        int totalPosts = postDAO.getTotalPosts(category, author, status, search);
+        int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
+
+        // Fetch filter options
+        List<Category> categories = postDAO.getUniqueCategories();
+        List<String> authors = postDAO.getUniqueAuthors();
+
+        // Set attributes for the JSP
+        request.setAttribute("posts", posts);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("categories", categories);
+        request.setAttribute("authors", authors);
+        request.setAttribute("category", category);
+        request.setAttribute("author", author);
+        request.setAttribute("status", status);
+        request.setAttribute("search", search);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("sortOrder", sortOrder);
+        request.setAttribute("isSuccess", request.getParameter("isSuccess"));
+        
+        request.getRequestDispatcher("/list-post.jsp").forward(request, response);
     }
 
     /**
@@ -73,24 +117,7 @@ public class ChangePasswordControl extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // lấy thông tin người dùng
-        User user = (User) request.getSession().getAttribute("user");
-
-        String oldPassword = request.getParameter("oldpassword");
-        String password = request.getParameter("password");
-        String repassword = request.getParameter("repassword");
-
-        if (password.equals(repassword) && user.getPassword().equals(oldPassword)) {
-
-            user.setPassword(password);
-            new UserDAO().updateUser(user);
-            
-            response.sendRedirect("userprofile?successcp");
-
-        } else response.sendRedirect("userprofile?failcp");
-
-        
+        processRequest(request, response);
     }
 
     /**
