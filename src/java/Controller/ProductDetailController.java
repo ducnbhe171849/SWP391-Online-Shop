@@ -14,7 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name="ProductDetailController", urlPatterns={"/public/product-detail"})
 public class ProductDetailController extends HttpServlet {
    
