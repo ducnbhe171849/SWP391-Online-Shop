@@ -1,7 +1,6 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <!DOCTYPE html>
-    <html lang="en">
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +9,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <style>
             body {
-                background-color: #e8e4d9;
+                background-color: #212529;
             }
 
             .login-container {
@@ -50,7 +49,6 @@
             .login-form button {
                 width: 100%;
                 padding: 10px;
-                background-color: #007bff;
                 color: #fff;
                 border: none;
                 border-radius: 4px;
@@ -58,7 +56,6 @@
             }
 
             .login-form button:hover {
-                background-color: #0056b3;
             }
 
             .forgot-password,
@@ -85,38 +82,37 @@
             }
         </style>
     </head>
-
     <body>
 
         <div class="login-container">
-            <h2>Login</h2>
+            <h2 class="text-warning">Staff Login</h2>
 
             <!-- Display error message if any -->
-            <% if (request.getAttribute("errorMessage") !=null) { %>
-                <div class="error-message">
-                    <%= request.getAttribute("errorMessage") %>
-                </div>
-                <% } %>
+            <% if (request.getAttribute("errorMessage") != null) { %>
+            <div class="error-message">
+                <%= request.getAttribute("errorMessage") %>
+            </div>
+            <% } %>
 
-                    <form class="login-form" action="login" method="post">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" id="email" name="email" required oninput="validateEmail()">
-                            <div id="emailError" class="error-message"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" required oninput="validatePassword()">
-                            <div id="passwordError" class="error-message"></div>
-                        </div>
-                        <button type="submit">Login</button>
-                    </form>
-                    <div class="forgot-password">
-                        <a href="reset-password">Forgot Password?</a>
-                    </div>
-                    <div class="register">
-                        <p>Don't have an account? <a href="register">Register</a></p>
-                    </div>
+            <form class="login-form" action="login-staff" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" required oninput="validateEmail()">
+                    <div id="emailError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required oninput="validatePassword()">
+                    <div id="passwordError" class="error-message"></div>
+                </div>
+                <button type="submit" class="btn btn-warning">Login</button>
+            </form>
+<!--            <div class="forgot-password">
+                <a href="reset-password">Forgot Password?</a>
+            </div>
+            <div class="register">
+                <p>Don't have an account? <a href="register">Register</a></p>
+            </div>-->
         </div>
 
         <!-- Include Bootstrap JS and Popper.js -->
@@ -152,5 +148,4 @@
         </script>
 
     </body>
-
-    </html>
+</html>

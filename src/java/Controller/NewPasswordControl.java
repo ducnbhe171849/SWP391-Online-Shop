@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
+
 package Controller;
 
 import DAO.UserDAO;
@@ -18,11 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- *
- * @author Anh Phuong Le
- */
-@WebServlet(name = "NewPasswordControl", urlPatterns = {"/new-password"})
+Servlet(name = "NewPasswordControl", urlPatterns = {"/new-password"})
 public class NewPasswordControl extends HttpServlet {
 
     @Override

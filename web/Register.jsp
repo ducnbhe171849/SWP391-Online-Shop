@@ -1,12 +1,7 @@
-<%-- 
-    Document   : Register
-    Created on : Jan 16, 2024, 9:22:50 PM
-    Author     : anhdu
---%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,70 +82,72 @@
             }
         </style>
     </head>
+
     <body>
 
         <div class="form-container">
             <h2>Register</h2>
 
             <!-- Display error message if any -->
-            <% if (request.getAttribute("errorMessage") != null) { %>
-            <div class="error-message">
-                <%= request.getAttribute("errorMessage") %>
-            </div>
-            <% } %>
-
-            <form class="login-form" action="register" method="post">
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" required oninput="validateFullName()">
-                    <div id="fullNameError" class="error-message"></div>
+            <% if (request.getAttribute("errorMessage") !=null) { %>
+                <div class="error-message">
+                    <%= request.getAttribute("errorMessage") %>
                 </div>
+                <% } %>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" id="email" name="email" required oninput="validateEmail()">
-                    <div id="emailError" class="error-message"></div>
-                </div>
+                    <form class="login-form" action="register" method="post">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" required oninput="validateFullName()">
+                            <div id="fullNameError" class="error-message"></div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required oninput="validatePassword()">
-                    <div id="passwordError" class="error-message"></div>
-                </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" id="email" name="email" required oninput="validateEmail()">
+                            <div id="emailError" class="error-message"></div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="retypePassword">Retype Password</label>
-                    <input type="password" id="retypePassword" name="retypePassword" required oninput="validateRetypePassword()">
-                    <div id="retypePasswordError" class="error-message"></div>
-                </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required oninput="validatePassword()">
+                            <div id="passwordError" class="error-message"></div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <select class="form-control" id="gender" name="gender" required>
-                        <option value="true">Male</option>
-                        <option value="false">Female</option>
-                    </select>
-                </div>
+                        <div class="form-group">
+                            <label for="retypePassword">Retype Password</label>
+                            <input type="password" id="retypePassword" name="retypePassword" required
+                                oninput="validateRetypePassword()">
+                            <div id="retypePasswordError" class="error-message"></div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="text" id="phone" name="phone" required oninput="validatePhone()">
-                    <div id="phoneError" class="error-message"></div>
-                </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select class="form-control" id="gender" name="gender" required>
+                                <option value="true">Male</option>
+                                <option value="false">Female</option>
+                            </select>
+                        </div>
 
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" name="address" required oninput="validateAddress()">
-                    <div id="addressError" class="error-message"></div>
-                </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" id="phone" name="phone" required oninput="validatePhone()">
+                            <div id="phoneError" class="error-message"></div>
+                        </div>
 
-                <button type="submit">Register</button>
-            </form>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" id="address" name="address" required oninput="validateAddress()">
+                            <div id="addressError" class="error-message"></div>
+                        </div>
+
+                        <button type="submit">Register</button>
+                    </form>
 
 
-            <div class="login-link">
-                <p>Already have an account? <a href="login">Login</a></p>
-            </div>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login">Login</a></p>
+                    </div>
         </div>
 
         <!-- Include Bootstrap JS and Popper.js -->
@@ -230,5 +227,5 @@
         </script>
 
     </body>
-</html>
 
+    </html>

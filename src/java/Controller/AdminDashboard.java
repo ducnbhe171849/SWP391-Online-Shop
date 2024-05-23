@@ -14,10 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
-/**
- *
- * @author lvhn1
- */
+
 @WebServlet(name = "AdminDashboard", urlPatterns = {"/admin/dashboard"})
 public class AdminDashboard extends HttpServlet {
 

@@ -1,12 +1,7 @@
-<%-- 
-    Document   : Register
-    Created on : Jan 16, 2024, 9:22:50 PM
-    Author     : anhdu
---%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,7 +74,7 @@
             .form-container .login-link a:hover {
                 text-decoration: underline;
             }
-            
+
             .error-message {
                 color: red;
                 text-align: center;
@@ -87,27 +82,28 @@
             }
         </style>
     </head>
+
     <body>
 
         <div class="form-container">
             <h2>Reset password</h2>
 
             <!-- Display error message if any -->
-            <% if (request.getAttribute("errorMessage") != null) { %>
-            <div class="error-message">
-                <%= request.getAttribute("errorMessage") %>
-            </div>
-            <% } %>
+            <% if (request.getAttribute("errorMessage") !=null) { %>
+                <div class="error-message">
+                    <%= request.getAttribute("errorMessage") %>
+                </div>
+                <% } %>
 
-            <form class="login-form" action="reset-password" method="post">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" id="email" name="email" required>
-                <button type="submit">Reset</button>
-            </form>
-            <div class="login-link">
-                <p>Already have an account? <a href="login">Login</a></p>
-            </div>
+                    <form class="login-form" action="reset-password" method="post">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" id="email" name="email" required>
+                            <button type="submit">Reset</button>
+                    </form>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login">Login</a></p>
+                    </div>
         </div>
 
         <!-- Include Bootstrap JS and Popper.js -->
@@ -116,5 +112,5 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     </body>
-</html>
 
+    </html>

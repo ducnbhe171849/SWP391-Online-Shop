@@ -1,12 +1,7 @@
-<%-- 
-    Document   : Register
-    Created on : Jan 16, 2024, 9:22:50 PM
-    Author     : anhdu
---%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,41 +82,43 @@
             }
         </style>
     </head>
+
     <body>
 
         <div class="form-container">
             <h2>New password</h2>
 
             <!-- Display error message if any -->
-            <% if (request.getAttribute("errorMessage") != null) { %>
-            <div class="error-message">
-                <%= request.getAttribute("errorMessage") %>
-            </div>
-            <% } %>
-
-            <form class="login-form" action="new-password" method="post">
-                <input type="hidden" name="email" value="${email}">
-                <input type="hidden" name="otp" value="${otp}">
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required oninput="validatePassword()">
-                    <div id="passwordError" class="error-message"></div>
+            <% if (request.getAttribute("errorMessage") !=null) { %>
+                <div class="error-message">
+                    <%= request.getAttribute("errorMessage") %>
                 </div>
+                <% } %>
 
-                <div class="form-group">
-                    <label for="retypePassword">Retype Password</label>
-                    <input type="password" id="retypePassword" name="retypePassword" required oninput="validateRetypePassword()">
-                    <div id="retypePasswordError" class="error-message"></div>
-                </div>
+                    <form class="login-form" action="new-password" method="post">
+                        <input type="hidden" name="email" value="${email}">
+                        <input type="hidden" name="otp" value="${otp}">
 
-                <button type="submit">Reset password</button>
-            </form>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required oninput="validatePassword()">
+                            <div id="passwordError" class="error-message"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="retypePassword">Retype Password</label>
+                            <input type="password" id="retypePassword" name="retypePassword" required
+                                oninput="validateRetypePassword()">
+                            <div id="retypePasswordError" class="error-message"></div>
+                        </div>
+
+                        <button type="submit">Reset password</button>
+                    </form>
 
 
-            <div class="login-link">
-                <p>Already have an account? <a href="login">Login</a></p>
-            </div>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login">Login</a></p>
+                    </div>
         </div>
 
         <!-- Include Bootstrap JS and Popper.js -->
@@ -201,5 +198,5 @@
         </script>
 
     </body>
-</html>
 
+    </html>

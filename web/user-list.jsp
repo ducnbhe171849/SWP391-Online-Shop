@@ -44,6 +44,10 @@
                     <input type="text" class="form-control" name="email" placeholder="Email">
                 </div>
                 <div class="form-group mr-2">
+                    <input type="text" class="form-control" name="phone" placeholder="Phone">
+                </div>
+                
+                <div class="form-group mr-2">
                     <select class="form-control" name="role">
                         <option value="">Select Role</option>
                         <option value="1">Admin</option>
@@ -59,7 +63,8 @@
                         <option value="Female">Female</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Search</button>
+                
+                <button type="submit" class="btn btn-primary mt-3">Search</button>
             </form>
 
 
@@ -72,6 +77,8 @@
                         <th>Role</th>
                         <th>Gender</th>
                         <th>Address</th>
+                        <th>Phone</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -84,6 +91,8 @@
                             <td>${user.roleString}</td>
                             <td>${user.gender}</td>
                             <td>${user.address}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.isDeleted ? 'Inactive' : 'Active'}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#userInfoModal_${user.id}">Info</button>
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal_${user.id}">Edit</button>
@@ -163,6 +172,13 @@
                                     <label for="phone">Phone</label>
                                     <input type="text" class="form-control" id="phone" name="phone" value="${user.getPhone()}">
                                 </div>
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="false" ${!user.isDeleted ? "selected" : ""}>Active</option>
+                                        <option value="true" ${user.isDeleted ? "selected" : ""}>Inactive</option>
+                                    </select>
+                                </div>
                                 <!-- Add other fields as needed -->
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </form>
@@ -182,6 +198,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <img src="${user.avatar}" class="img-thumbnail mb-3" alt="Profile Image" style="width: 150px; height: 150px;">
                             <p><strong>ID:</strong> ${user.id}</p>
                             <p><strong>Full Name:</strong> ${user.fullname}</p>
                             <p><strong>Email:</strong> ${user.getEmail()}</p>
@@ -189,6 +206,7 @@
                             <p><strong>Gender:</strong> ${user.gender}</p>
                             <p><strong>Address:</strong> ${user.getAddress()}</p>
                             <p><strong>Phone:</strong> ${user.getPhone()}</p>
+                            <p><strong>Status</strong> ${user.isDeleted ? 'Inactive' : 'Active'}</p>
                         </div>
                     </div>
                 </div>
@@ -273,7 +291,7 @@
                     "paging": false,
                     "lengthChange": false,
                     "searching": false,
-                    "ordering": false,
+                    "ordering": true,
                     "info": false,
                     "autoWidth": false
                 });
