@@ -1,7 +1,8 @@
 
 package Controller;
 
-import DAO.UserDAO;
+import DAO.StaffDAO;
+import Model.Staff;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -9,11 +10,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 
-
-@WebServlet(name = "AdminDashboard", urlPatterns = {"/admin/dashboard"})
-public class AdminDashboard extends HttpServlet {
+@WebServlet(name = "LoginStaffControl", urlPatterns = {"/login-staff"})
+public class LoginStaffControl extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -23,10 +22,10 @@ public class AdminDashboard extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AdminDashboard</title>");
+            out.println("<title>Servlet LoginControl</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AdminDashboard at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet LoginControl at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -44,9 +43,7 @@ public class AdminDashboard extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Forward the request to the JSP
-        request.getRequestDispatcher("../admin-dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("LoginStaff.jsp").forward(request, response);
     }
 
     /**
@@ -61,6 +58,25 @@ public class AdminDashboard extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        StaffDAO staffDAO = new StaffDAO();
+        Staff staff = staffDAO.loginStaff(email, password);
+
+        if (staff != null) {
+            // Login successful
+            request.getSession().setAttribute("staff", staff); 
+
+            if (staff.getRole() == 1) response.sendRedirect("admin/dashboard");
+            if (staff.getRole() == 2) response.sendRedirect("marketing/dashboard");
+            if (staff.getRole() == 3 || staff.getRole() == 4) response.sendRedirect("sale/dashboard");
+//            response.sendRedirect("home");
+        } else {
+            // Login failed
+            request.setAttribute("errorMessage", "Invalid email or password");
+            request.getRequestDispatcher("LoginStaff.jsp").forward(request, response);
+        }
     }
 
     /**

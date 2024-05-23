@@ -1,8 +1,3 @@
-<%-- 
-    Document   : product-detail
-    Created on : May 18, 2024, 5:58:36 PM
-    Author     : Legion
---%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

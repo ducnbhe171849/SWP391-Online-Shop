@@ -16,10 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- *
- * @author Legion
- */
+
 @WebServlet(name = "ListPostController", urlPatterns = {"/marketing/list-post"})
 public class ListPostController extends HttpServlet {
 

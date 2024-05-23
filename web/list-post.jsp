@@ -1,3 +1,5 @@
+
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -210,8 +212,8 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="postImgURLUpdate">Thumbnail Link:</label>
-                                <input type="text" class="form-control" id="postImgURLUpdate" name="imgURL" required>
+                                <label for="postImgURL">Thumbnail Link:</label>
+                                <input type="text" class="form-control" id="postImgURL" name="imgURL" required>
                             </div>
                             <div class="form-group">
                                 <label for="postTitle">Title</label>

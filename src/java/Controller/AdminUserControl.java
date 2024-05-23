@@ -38,12 +38,13 @@ public class AdminUserControl extends HttpServlet {
         // Filter parameters
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         String roleString = request.getParameter("role");
         int role = (roleString==null || roleString.isEmpty()) ? -1 : Integer.parseInt(roleString);
         String gender = request.getParameter("gender");
 
         // Perform filtering based on the provided parameters
-        List<Staff> filteredStaffList = staffDAO.getFilteredStaff(fullName, email, role, gender, pageNumber, pageSize);
+        List<Staff> filteredStaffList = staffDAO.getFilteredStaff(fullName, email, phone, role, gender, pageNumber, pageSize);
 
         // Get total number of staffs matching the filter criteria
         int totalStaffs = staffDAO.getFilteredStaff(fullName, email, role, gender).size();
@@ -95,15 +96,15 @@ public class AdminUserControl extends HttpServlet {
         if (staff == null) {
             // Register the staff
             Staff newStaff = new Staff();
-            staff.setEmail(email);
-            staff.setPassword(password);
-            staff.setFullname(fullName);
-            staff.setGender(gender ? "Male" : "Female");
-            staff.setAddress(address);
-            staff.setPhone(phone);
-            staff.setRole(role);
+            newStaff.setEmail(email);
+            newStaff.setPassword(password);
+            newStaff.setFullname(fullName);
+            newStaff.setGender(gender ? "Male" : "Female");
+            newStaff.setAddress(address);
+            newStaff.setPhone(phone);
+            newStaff.setRole(role);
 
-            success = staffDAO.registerStaff(staff);
+            success = staffDAO.registerStaff(newStaff);
 
             EmailService.sendEmail(email, "Account created", "Your password: " + password);
         }
@@ -121,22 +122,24 @@ public class AdminUserControl extends HttpServlet {
         int staffId = Integer.parseInt(request.getParameter("userId"));
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        
         int role = Integer.parseInt(request.getParameter("role"));
         boolean gender = Boolean.parseBoolean(request.getParameter("gender"));
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
+        boolean status = Boolean.parseBoolean(request.getParameter("status"));
 
         // Create a Staff object with the updated data
-        Staff staff = new Staff();
+        Staff staff = new StaffDAO().getStaffById(staffId);
         staff.setId(staffId);
         staff.setFullname(fullName);
         staff.setEmail(email);
-        staff.setPassword(password);
+        
         staff.setRole(role);
         staff.setGender(gender ? "Male" : "Female");
         staff.setAddress(address);
         staff.setPhone(phone);
+        staff.setIsDeleted(status);
 
         // Update the staff
         boolean success = staffDAO.updateStaff(staff);

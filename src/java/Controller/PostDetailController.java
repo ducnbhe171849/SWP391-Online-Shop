@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Legion
- */
+
 @WebServlet(name="PostDetailController", urlPatterns={"/marketing/post-detail"})
 public class PostDetailController extends HttpServlet {
    
@@ -79,7 +76,7 @@ public class PostDetailController extends HttpServlet {
         String jsonPost = "[{\"id\":" + post.getId()+ ","
                 + "\"categoryId\":\"" + post.getCategoryId()+ "\","
                 + "\"title\":\"" + post.getTitle()+ "\","
-               + "\"content\":\"" + post.getContent() + "\","
+                + "\"content\":\"" + post.getContent() + "\","
                 + "\"isDeleted\":\"" + post.isIsDeleted() + "\","
                 + "\"createdAt\":\"" + post.getCreatedAt() + "\","
                 + "\"imgURL\":\"" + post.getImgURL()+ "\","

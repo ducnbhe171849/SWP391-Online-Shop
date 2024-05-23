@@ -33,7 +33,7 @@ public class PostDAO extends DBContext {
     public List<Post> getPosts(int page, int pageSize, String category, String author, String status, String search, String sortBy, String sortOrder) {
         List<Post> posts = new ArrayList<>();
         int offset = (page - 1) * pageSize;
-        StringBuilder query = new StringBuilder("SELECT po.ID as PostID, CategoryId, Title, Content, po.IsDeleted, po.CreatedAt, po.CreatedBy, po.imgURL, u.Fullname as AuthorName "
+        StringBuilder query = new StringBuilder("SELECT po.ID, po.[CategoryId], po.Title, po.Content, po.IsDeleted, po.CreatedAt, po.imgURL, u.Fullname as AuthorName "
                 + "FROM [dbo].[Post] po "
                 + "JOIN [dbo].[User] u ON po.CreatedBy = u.ID "
                 + "JOIN [dbo].[Category] c ON po.CategoryId = c.ID "

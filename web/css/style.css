@@ -12,7 +12,7 @@
 
 .category_block li a {
     color: #343a40 ;
-      transition: transform 0.3s;
+    transition: transform 0.3s;
 }
 
 a .active {
@@ -98,22 +98,25 @@ body {
     background-color: #343a40;
     padding: 0.3em 0.6em;
     font-size: 1em;
-      display: block; /* Để có thể sử dụng margin: auto; */
+    display: block; /* Để có thể sử dụng margin: auto; */
     margin: auto; /* Căn giữa theo chiều ngang */
-    
-}
- #carouselExample {
-        width: 800px; /* Điều chỉnh độ rộng của slider */
-        height: 400px; /* Điều chỉnh chiều cao của slider */
-        margin: auto; /* Căn giữa slider */
-    }
 
-    #carouselExample .carousel-inner .carousel-item img {
-        max-width: 100%; /* Đảm bảo hình ảnh trong slider không vượt quá chiều rộng của slider */
-        max-height: 100%; /* Đảm bảo hình ảnh trong slider không vượt quá chiều cao của slider */
-    }
-    
-    .btn-mo{
-        background-color: #343a40;
-        color: #ffffff;
-    }
+}
+#carouselExample {
+    width: 800px; /* Điều chỉnh độ rộng của slider */
+    height: 400px; /* Điều chỉnh chiều cao của slider */
+    margin: auto; /* Căn giữa slider */
+}
+
+#carouselExample .carousel-inner .carousel-item img {
+    max-width: 100%; /* Đảm bảo hình ảnh trong slider không vượt quá chiều rộng của slider */
+    max-height: 100%; /* Đảm bảo hình ảnh trong slider không vượt quá chiều cao của slider */
+}
+
+.btn-mo{
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+
+

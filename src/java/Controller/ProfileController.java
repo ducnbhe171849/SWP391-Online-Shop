@@ -13,10 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author anhdu
- */
+
 @WebServlet(name = "ProfileController", urlPatterns = {"/common/profile"})
 public class ProfileController extends HttpServlet {
 
@@ -44,6 +41,7 @@ public class ProfileController extends HttpServlet {
 
         
         User user = new UserDAO().getUserById(id);
+        
         user.setId(id);
         user.setEmail(email);
         user.setPassword(password);

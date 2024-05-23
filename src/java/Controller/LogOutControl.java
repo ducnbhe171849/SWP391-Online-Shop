@@ -1,7 +1,12 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Controller;
 
 import DAO.UserDAO;
+import Model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -9,27 +14,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
+import jakarta.servlet.http.HttpSession;
 
 
-@WebServlet(name = "AdminDashboard", urlPatterns = {"/admin/dashboard"})
-public class AdminDashboard extends HttpServlet {
+@WebServlet(name = "LogOutControl", urlPatterns = {"/logout"})
+public class LogOutControl extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AdminDashboard</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AdminDashboard at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+
+        request.getSession().invalidate();
+        response.sendRedirect("login");
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -44,9 +40,7 @@ public class AdminDashboard extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Forward the request to the JSP
-        request.getRequestDispatcher("../admin-dashboard.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -60,7 +54,7 @@ public class AdminDashboard extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**
