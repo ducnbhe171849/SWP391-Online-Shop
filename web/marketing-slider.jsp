@@ -55,7 +55,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Image URL</th>
+                        <th>Image</th>
                         <th>Status</th>
                         <th>Created At</th>
                         <th>Actions</th>
@@ -65,12 +65,12 @@
                     <c:forEach var="slider" items="${sliderList}">
                         <tr>
                             <td>${slider.id}</td>
-                            <td>${fn:substring(slider.imageUrl, 0, 30)}...</td>
+                            <td><img style="width: 200px" src="${slider.imageUrl}"></td>
                             <td>${slider.isDeleted ? 'Inactive' : 'Active'}</td>
                             <td><fmt:formatDate value="${slider.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#sliderInfoModal_${slider.id}">Info</button>
-                                <!--<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editSliderModal_${slider.id}">Edit</button>-->
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editSliderModal_${slider.id}">Edit</button>
                             </td>
                         </tr>
                     </c:forEach>
@@ -145,8 +145,8 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <img class="w-100 mb-3" src="${slider.imageUrl}">
                             <p><strong>ID:</strong> ${slider.id}</p>
-                            <p><strong>Image URL:</strong> ${slider.imageUrl}</p>
                             <p><strong>Status:</strong> ${slider.isDeleted ? 'Inactive' : 'Active'}</p>
                             <p><strong>Created At:</strong> <fmt:formatDate value="${slider.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></p>
                             <!--<p><strong>Created By:</strong> ${slider.createdBy}</p>-->
