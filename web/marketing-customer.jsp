@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>User List</title>
+        <title>Customer List</title>
         <!-- Bootstrap CSS -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <!-- DataTable CSS -->
@@ -19,7 +19,7 @@
         <%@ include file="marketing-sidebar.jsp" %>
 
         <div class="container mt-5 main-content">
-            <h2>User List</h2>
+            <h2>Customer List</h2>
 
 
             <c:if test="${param.success ne null}">
@@ -51,6 +51,13 @@
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group mr-2">
+                    <select class="form-control" name="status">
+                        <option value="">Select Status</option>
+                        <option value="true">Inactive</option>
+                        <option value="fale">Active</option>
                     </select>
                 </div>
                 
@@ -119,7 +126,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editUserModalLabel_${user.id}">Edit User</h5>
+                            <h5 class="modal-title" id="editUserModalLabel_${user.id}">Edit Customer</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -172,7 +179,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="userInfoModalLabel_${user.id}">User Details</h5>
+                            <h5 class="modal-title" id="userInfoModalLabel_${user.id}">Customer Details</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -186,6 +193,7 @@
                             <p><strong>Address:</strong> ${user.getAddress()}</p>
                             <p><strong>Phone:</strong> ${user.getPhone()}</p>
                             <p><strong>Status</strong> ${user.isDeleted ? 'Inactive' : 'Active'}</p>
+                            <div><strong>History Change</strong> ${user.changeHistory eq null ? 'No data' : user.changeHistory}</div>
                         </div>
                     </div>
                 </div>
@@ -201,7 +209,7 @@
                 <div class="modal-content">
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                        <h5 class="modal-title" id="addUserModalLabel">Add Customer</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -240,7 +248,7 @@
                                 <label for="phone">Phone</label>
                                 <input type="text" class="form-control" id="phone" name="phone">
                             </div>
-                            <button type="submit" class="btn btn-primary">Add User</button>
+                            <button type="submit" class="btn btn-primary">Add Customer</button>
                         </form>
                     </div>
                 </div>
