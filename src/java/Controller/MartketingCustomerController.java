@@ -43,7 +43,7 @@ public class MartketingCustomerController extends HttpServlet {
         String phone = request.getParameter("phone");
         String gender = request.getParameter("gender");
         String statusString = request.getParameter("status");
-        Boolean status = statusString==null ? null : Boolean.parseBoolean(statusString);
+        Boolean status = (statusString==null || statusString.isEmpty()) ? null : Boolean.parseBoolean(statusString);
 
         // Perform filtering based on the provided parameters
         List<User> filteredUserList = userDAO.getFilteredUsers(fullName, email, phone, gender, status, pageNumber, pageSize);
@@ -59,6 +59,11 @@ public class MartketingCustomerController extends HttpServlet {
         request.setAttribute("currentPage", pageNumber);
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("fullName", fullName);
+        request.setAttribute("email", email);
+        request.setAttribute("phone", phone);
+        request.setAttribute("gender", gender);
+        request.setAttribute("statusString", statusString);
 
         request.getRequestDispatcher("../marketing-customer.jsp").forward(request, response);
     }
@@ -138,7 +143,7 @@ public class MartketingCustomerController extends HttpServlet {
         user.setAddress(address);
         user.setPhone(phone);
         user.setIsDeleted(status);
-        user.setChangeHistory((user.getChangeHistory() == null ? "" : user.getChangeHistory()) + "<br><p>" + user.toString() + " Updated by: " + staff.getFullname() + "</p>");
+        user.setChangeHistory((user.getChangeHistory() == null ? "" : user.getChangeHistory()) + user.toString(staff));
 
         // Update the user
         boolean success = userDAO.updateUser(user);
