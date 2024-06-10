@@ -15,10 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- *
- * @author anhdu
- */
 @WebServlet(name = "MarketingSliderController", urlPatterns = {"/marketing/slider"})
 public class MarketingSliderController extends HttpServlet {
 
