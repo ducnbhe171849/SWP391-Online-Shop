@@ -5,8 +5,10 @@
 package Controller;
 
 import DAO.UserDAO;
+import Model.Staff;
 import Model.User;
 import Utils.EmailService;
+import Utils.SessionUserInfo;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -40,12 +42,14 @@ public class MartketingCustomerController extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
         String gender = request.getParameter("gender");
+        String statusString = request.getParameter("status");
+        Boolean status = (statusString==null || statusString.isEmpty()) ? null : Boolean.parseBoolean(statusString);
 
         // Perform filtering based on the provided parameters
-        List<User> filteredUserList = userDAO.getFilteredUsers(fullName, email, phone, gender, pageNumber, pageSize);
+        List<User> filteredUserList = userDAO.getFilteredUsers(fullName, email, phone, gender, status, pageNumber, pageSize);
 
         // Get total number of users matching the filter criteria
-        int totalUsers = userDAO.getFilteredUsers(fullName, email, gender).size();
+        int totalUsers = userDAO.getFilteredUsers(fullName, email, gender, status).size();
 
         // Calculate total number of pages
         int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
@@ -55,6 +59,11 @@ public class MartketingCustomerController extends HttpServlet {
         request.setAttribute("currentPage", pageNumber);
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("fullName", fullName);
+        request.setAttribute("email", email);
+        request.setAttribute("phone", phone);
+        request.setAttribute("gender", gender);
+        request.setAttribute("statusString", statusString);
 
         request.getRequestDispatcher("../marketing-customer.jsp").forward(request, response);
     }
@@ -122,6 +131,8 @@ public class MartketingCustomerController extends HttpServlet {
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
         boolean status = Boolean.parseBoolean(request.getParameter("status"));
+        
+        Staff staff = SessionUserInfo.getStaffSession(request);
 
         // Create a User object with the updated data
         User user = new UserDAO().getUserById(userId);
@@ -132,6 +143,7 @@ public class MartketingCustomerController extends HttpServlet {
         user.setAddress(address);
         user.setPhone(phone);
         user.setIsDeleted(status);
+        user.setChangeHistory((user.getChangeHistory() == null ? "" : user.getChangeHistory()) + user.toString(staff));
 
         // Update the user
         boolean success = userDAO.updateUser(user);

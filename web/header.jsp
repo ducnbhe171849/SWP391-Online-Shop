@@ -1,11 +1,12 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="Model.Cart" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Header</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     </head>
     <body>
         <!-- Navigation-->
@@ -28,20 +29,29 @@
                         </li>
                     </ul>
                     <form class="d-flex">
-                        <button class="btn btn-outline-dark" type="submit" style="margin-right: 25px">
-                            <i class="bi-cart-fill me-1"></i>
-                            Cart
-                            <span id="cart" class="badge bg-dark text-white ms-1 rounded-pill">${sessionScope.cart eq null ? 0 : sessionScope.cart.size()}</span>
-                        </button>
+
                         <c:if test="${sessionScope.user == null}">
-                            <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/login">
+                            <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/login" style="margin-right: 25px">
                                 <i class="bi-user me-1"></i>
                                 Login
                             </a>
                         </c:if>
                         <c:if test="${sessionScope.user != null}">
+                            <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/public/cart" style="margin-right: 25px">
+                                <i class="bi-cart-fill me-1"></i>
+                                Cart
+                            </a>
                             <a class="btn btn-outline-dark mx-2" href="${pageContext.request.contextPath}/common/profile">
                                 Profile
+                            </a>
+
+                            <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/customer/my-order" style="margin-right: 25px">
+                                <i class="bi-user me-1"></i>
+                                My Order
+                            </a>
+                            <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/customer/list-feedback">
+                                <i class="bi-user me-1"></i>
+                                Feedback
                             </a>
                             <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/logout">
                                 Logout

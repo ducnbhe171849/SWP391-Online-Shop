@@ -37,17 +37,18 @@
             <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addSliderModal">Add Slider</button>
 
             <!--filter form-->
-            <form action="slider" method="get" class="form-inline mb-3">
+            <form id="searchForm" action="slider" method="get" class="form-inline mb-3">
                 <div class="form-group mr-2">
-                    <input type="text" class="form-control" name="search" placeholder="Search">
+                    <input type="text" class="form-control" name="search" placeholder="Search"value="${search}">
                 </div>
                 <div class="form-group mr-2">
                     <select class="form-control" name="status">
                         <option value="">Select Status</option>
-                        <option value="true">Inactive</option>
-                        <option value="false">Active</option>
+                        <option value="true" ${status eq 'true' ? 'selected' : ''}>Inactive</option>
+                        <option value="false" ${status eq 'false' ? 'selected' : ''}>Active</option>
                     </select>
                 </div>
+                <input type="hidden" name="page" id="pageInput" value="1">
                 <button type="submit" class="btn btn-primary mt-3">Search</button>
             </form>
 
@@ -55,9 +56,10 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Title</th>
                         <th>Image</th>
+                        <th>Backlink</th>
                         <th>Status</th>
-                        <th>Created At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -65,9 +67,10 @@
                     <c:forEach var="slider" items="${sliderList}">
                         <tr>
                             <td>${slider.id}</td>
+                            <td>${slider.title}</td>
                             <td><img style="width: 200px" src="${slider.imageUrl}"></td>
+                            <td>${slider.backlink}</td>
                             <td>${slider.isDeleted ? 'Inactive' : 'Active'}</td>
-                            <td><fmt:formatDate value="${slider.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#sliderInfoModal_${slider.id}">Info</button>
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editSliderModal_${slider.id}">Edit</button>
@@ -80,19 +83,19 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a class="page-link" href="?page=1" aria-label="Previous">
+                        <button class="page-link" onclick="submitFormWithPage(1)" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
-                        </a>
+                        </button>
                     </li>
                     <c:forEach begin="1" end="${totalPages}" step="1" var="i">
                         <li class="page-item ${currentPage == i ? 'active' : ''}">
-                            <a class="page-link" href="?page=${i}">${i}</a>
+                            <button class="page-link" onclick="submitFormWithPage(${i})">${i}</button>
                         </li>
                     </c:forEach>
                     <li class="page-item">
-                        <a class="page-link" href="?page=${totalPages}" aria-label="Next">
+                        <button class="page-link" onclick="submitFormWithPage(${totalPages})" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </nav>
@@ -116,8 +119,22 @@
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="sliderId" value="${slider.id}">
                                 <div class="form-group">
-                                    <label for="imageUrl">Image URL</label>
-                                    <input type="text" class="form-control" id="imageUrl" name="imageUrl" value="${slider.imageUrl}">
+                                    <label for="imageUrl">Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" value="${slider.title}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="imageUrl">Image</label>
+                                    <img id="image${slider.id}" class="w-100" src="${slider.imageUrl}">
+                                    <input type="file" class="form-control" id="imageFile${slider.id}" accept="image/*" onchange="updateImage(${slider.id})">
+                                    <input type="hidden" class="form-control" id="imageUrl${slider.id}" name="imageUrl" value="${slider.imageUrl}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="imageUrl">Backlink</label>
+                                    <input type="text" class="form-control" id="backlink" name="backlink" value="${slider.backlink}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="imageUrl">Note</label>
+                                    <input type="text" class="form-control" id="notes" name="notes" value="${slider.notes}">
                                 </div>
                                 <div class="form-group">
                                     <label for="status">Status</label>
@@ -147,6 +164,9 @@
                         <div class="modal-body">
                             <img class="w-100 mb-3" src="${slider.imageUrl}">
                             <p><strong>ID:</strong> ${slider.id}</p>
+                            <p><strong>Title:</strong> ${slider.title}</p>
+                            <p><strong>Notes:</strong> ${slider.notes}</p>
+                            <p><strong>Backlink:</strong> ${slider.backlink}</p>
                             <p><strong>Status:</strong> ${slider.isDeleted ? 'Inactive' : 'Active'}</p>
                             <p><strong>Created At:</strong> <fmt:formatDate value="${slider.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></p>
                             <!--<p><strong>Created By:</strong> ${slider.createdBy}</p>-->
@@ -178,7 +198,21 @@
                             <!-- Form Inputs -->
                             <div class="form-group">
                                 <label for="imageUrl">Image URL</label>
-                                <input type="text" class="form-control" id="imageUrl" name="imageUrl" required>
+                                <img id="image0" class="w-100" src="">
+                                <input type="file" class="form-control" id="imageFile0" accept="image/*" onchange="updateImage(0)" required>
+                                <input type="hidden" class="form-control" id="imageUrl0" name="imageUrl" value="${slider.imageUrl}">
+                            </div>
+                            <div class="form-group">
+                                <label for="imageUrl">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="imageUrl">Backlink</label>
+                                <input type="text" class="form-control" id="backlink" name="backlink" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="imageUrl">Note</label>
+                                <input type="text" class="form-control" id="notes" name="notes">
                             </div>
                             <div class="form-group">
                                 <label for="isDeleted">Status</label>
@@ -187,16 +221,49 @@
                                     <option value="true">Inactive</option>
                                 </select>
                             </div>
-<!--                            <div class="form-group">
-                                <label for="createdBy">Created By</label>
-                                <input type="text" class="form-control" id="createdBy" name="createdBy" required>
-                            </div>-->
+                            <!--                            <div class="form-group">
+                                                            <label for="createdBy">Created By</label>
+                                                            <input type="text" class="form-control" id="createdBy" name="createdBy" required>
+                                                        </div>-->
                             <button type="submit" class="btn btn-primary">Add Slider</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            function updateImage(sliderId) {
+                let fileInput = document.getElementById(`imageFile` + sliderId);
+                let image = document.getElementById(`image` + sliderId);
+                let hiddenInput = document.getElementById(`imageUrl` + sliderId);
+                console.log(fileInput, image, hiddenInput)
+
+                if (fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const maxSize = 2 * 1024 * 1024; // 2 MB in bytes
+
+                    if (file.size > maxSize) {
+                        alert("The selected file is too large. Please select a file smaller than 2 MB.");
+                        fileInput.value = ''; // Clear the file input
+                        return;
+                    }
+
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Update the image src
+                        image.src = e.target.result;
+
+                        // Optionally, update the hidden input with the base64 data URL
+                        hiddenInput.value = e.target.result;
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>
+
 
         <!-- Bootstrap JS and jQuery -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -217,6 +284,13 @@
                     "autoWidth": false
                 });
             });
+        </script>
+
+        <script>
+            function submitFormWithPage(page) {
+                document.getElementById('pageInput').value = page;
+                document.getElementById('searchForm').submit();
+            }
         </script>
 
     </body>

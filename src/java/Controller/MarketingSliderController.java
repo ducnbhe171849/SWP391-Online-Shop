@@ -15,10 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- *
- * @author anhdu
- */
 @WebServlet(name = "MarketingSliderController", urlPatterns = {"/marketing/slider"})
 public class MarketingSliderController extends HttpServlet {
 
@@ -54,6 +50,8 @@ public class MarketingSliderController extends HttpServlet {
         request.setAttribute("currentPage", pageNumber);
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("search", search);
+        request.setAttribute("status", status);
 
         request.getRequestDispatcher("../marketing-slider.jsp").forward(request, response);
     }
@@ -79,11 +77,17 @@ public class MarketingSliderController extends HttpServlet {
     private void addSlider(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Retrieve slider data from request parameters
         String imageUrl = request.getParameter("imageUrl");
+        String title = request.getParameter("title");
+        String backlink = request.getParameter("backlink");
+        String notes = request.getParameter("notes");
         boolean isDeleted = Boolean.parseBoolean(request.getParameter("isDeleted"));
         java.util.Date createdAt = new java.util.Date(); // Set current date as created date
 //        int createdBy = Integer.parseInt(request.getParameter("createdBy"));
 
         Slider newSlider = new Slider();
+        newSlider.setTitle(title);
+        newSlider.setBacklink(backlink);
+        newSlider.setNotes(notes);
         newSlider.setImageUrl(imageUrl);
         newSlider.setIsDeleted(isDeleted);
         newSlider.setCreatedAt(createdAt);
@@ -101,6 +105,9 @@ public class MarketingSliderController extends HttpServlet {
 
     private void updateSlider(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Retrieve slider data from request parameters
+        String title = request.getParameter("title");
+        String backlink = request.getParameter("backlink");
+        String notes = request.getParameter("notes");
         int sliderId = Integer.parseInt(request.getParameter("sliderId"));
         String imageUrl = request.getParameter("imageUrl");
         boolean isDeleted = Boolean.parseBoolean(request.getParameter("isDeleted"));
@@ -109,6 +116,9 @@ public class MarketingSliderController extends HttpServlet {
         Slider slider = sliderDAO.getSliderById(sliderId);
         slider.setImageUrl(imageUrl);
         slider.setIsDeleted(isDeleted);
+        slider.setTitle(title);
+        slider.setBacklink(backlink);
+        slider.setNotes(notes);
 
         // Update the slider
         boolean success = sliderDAO.updateSlider(slider);
