@@ -24,7 +24,7 @@
             <div class="row col-12" style="margin-bottom: 200px">
                 <!-- Sidebar -->
                 <div id="sidebar" class="col-md-2 p-3 mr-5" style="border: 1px solid rgb(144, 141, 141); height: 100vh;">
-                    <form method="get" action="/public/list-product" class="mr-0">
+                    <form method="get" action="../public/list-product" class="mr-0">
                         <div id="product-search">
                             <h3>Search Products</h3>
                             <input type="text" id="search-box" name="searchQuery" placeholder="Search for products..." class="form-control" value="${param.searchQuery}">
@@ -42,8 +42,8 @@
                 </form>
                 <div id="latest-products">
                     <h3>Latest Products</h3>
-                    <c:forEach items="${products}" var="p">
-                        <a id="product" href="product-detail?id=${p.productId}" style="text-decoration: none; color: black;">
+                    <c:forEach items="${latestProducts}" var="p">
+                        <a id="product" href="../public/product-detail?id=${p.productId}" style="text-decoration: none; color: black;">
                             <table class="p-2">
                                 <tr>
                                     <td><img src="${p.productDetail.imageURL}" style="width:50px; height: 50px" alt="..." /></td>
@@ -94,6 +94,7 @@
                 <p>Full Name: ${order.fullname}</p>
                 <p>Address: ${order.address}</p>
                 <p>Phone: ${order.phone}</p>
+                <p>Gender: ${order.getGender(sessionScope.user.email)}</p>
 
                 <!-- Ordered Products -->
                 <h3>Ordered Products</h3>
@@ -120,7 +121,9 @@
                                 <td>$${product.discount != null &&  product.discount != 0 ? (product.price * (100-product.discount)/100)*(product.buyQuantity) : product.price*product.buyQuantity}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/public/product-detail?id=${product.productId}&pdid=${product.productDetailId}" class="btn btn-primary">Re-buy</a>
-                                    <a href="feedback?productId=" class="btn btn-secondary">Feedback</a>
+                                    <c:if test="${order.status eq 'Received'}">
+                                        <a href="feedback?id=${product.orderDetailId}" class="btn btn-secondary">Feedback</a>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -130,9 +133,12 @@
                     <strong>Total Order Price:</strong> $${order.totalCost}
                 </div>
                 <!-- Order Actions -->
-                <div class="mt-4">
+                <c:if test="${order.status ne 'Received'}">
+                    <div class="mt-4">
                     <a href="cancel-order?orderId=${order.id}" class="btn btn-danger">Cancel Order</a>
                 </div>
+                </c:if>
+                
             </div>
         </div>
                     <jsp:include page="footer.html"></jsp:include>

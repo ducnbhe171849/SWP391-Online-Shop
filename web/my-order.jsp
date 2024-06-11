@@ -49,7 +49,7 @@
                 <div id="latest-products">
                     <h3>Latest Products</h3>
                     <c:forEach items="${products}" var="p">
-                        <a id="product" href="product-detail?id=${p.productId}" style="text-decoration: none; color: black;">
+                        <a id="product" href="../public/product-detail?id=${p.productId}" style="text-decoration: none; color: black;">
                             <table class="p-2">
                                 <tr>
                                     <td><img src="${p.productDetail.imageURL}" style="width:50px; height: 50px" alt="..." /></td>
@@ -91,7 +91,7 @@
                 <c:if test="${isSuccess ne null && isSuccess}">
                     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
                         <strong>Save success!</strong> You should check in on some of those fields below.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('mess').style.display = 'none'"></button>
                     </div>
                 </c:if>
                 <c:if test="${isSuccess ne null && !isSuccess}">
@@ -110,6 +110,7 @@
                             <th>Phone</th>
                             <th>Total</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,6 +122,12 @@
                                 <td>${item.phone}</td>
                                 <td>$${item.totalCost}</td>
                                 <td>${item.status}</td>
+                                <td>
+                                    <c:if test="${item.status eq 'shipping'}">
+                                        <a href="confirm-order?orderId=${item.id}" class="btn btn-primary">Received</a>
+                                    </c:if>
+                                    
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
