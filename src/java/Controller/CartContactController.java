@@ -5,7 +5,13 @@
 
 package Controller;
 
-import DAO.OrderDAO;
+import DAO.CartDAO;
+import DAO.PostDAO;
+import DAO.ProductDAO;
+import Model.Cart;
+import Model.Category;
+import Model.Product;
+import Model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,10 +19,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
-@WebServlet(name="CancelOrderController", urlPatterns={"/customer/cancel-order"})
-public class CancelOrderController extends HttpServlet {
+@WebServlet(name="CartContactController", urlPatterns={"/public/cart-contact"})
+public class CartContactController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,10 +40,10 @@ public class CancelOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CancelOrderController</title>");  
+            out.println("<title>Servlet CartContactController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CancelOrderController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CartContactController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -53,13 +60,36 @@ public class CancelOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        User user = (User) request.getSession().getAttribute("user");
+        int userId = user.getId();
+        int page = 1;
+        int PAGE_SIZE = 5;
+        String searchQuery = request.getParameter("searchQuery");
+        String category = request.getParameter("category");
 
-        OrderDAO orderDAO = new OrderDAO();
-        
-        boolean isSuccess = orderDAO.cancelOrder(orderId);
+        if (request.getParameter("page") != null) {
+            page = Integer.parseInt(request.getParameter("page"));
+        }
+
+        CartDAO cartDAO = new CartDAO();
+        ProductDAO productDAO = new ProductDAO();
+
+        List<Cart> cartItemsFull = cartDAO.getAllCarts(userId);
+        List<Cart> cartItems = cartDAO.getAllCarts(userId, page, PAGE_SIZE, searchQuery, category);
+        List<Category> categories = new PostDAO().getUniqueCategories();
+        List<Product> products = productDAO.getThreeLastestProducts();
+
+        int totalCartItems = cartDAO.getCartCount(userId, searchQuery, category);
+        int totalPages = (int) Math.ceil((double) totalCartItems / PAGE_SIZE);
+
+        request.setAttribute("cartItemsFull", cartItemsFull);
+        request.setAttribute("cartItems", cartItems);
+        request.setAttribute("products", products);
+        request.setAttribute("categories", categories);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("isSuccess", request.getParameter("isSuccess"));
-        response.sendRedirect("my-order?isSuccess=" + isSuccess);
+        request.getRequestDispatcher("/cart-contact.jsp").forward(request, response);
     } 
 
     /** 

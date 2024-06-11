@@ -5,7 +5,7 @@
 
 package Controller;
 
-import DAO.OrderDAO;
+import DAO.CartDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,9 +14,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
-@WebServlet(name="CancelOrderController", urlPatterns={"/customer/cancel-order"})
-public class CancelOrderController extends HttpServlet {
+/**
+ *
+ * @author Legion
+ */
+@WebServlet(name="UpdateCartController", urlPatterns={"/public/update-cart"})
+public class UpdateCartController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,19 +30,12 @@ public class CancelOrderController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CancelOrderController</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CancelOrderController at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        int cartId = Integer.parseInt(request.getParameter("cartId"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        
+        new CartDAO().updateCart(quantity, cartId);
+        
+        response.sendRedirect("cart");
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -53,13 +49,7 @@ public class CancelOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
-
-        OrderDAO orderDAO = new OrderDAO();
-        
-        boolean isSuccess = orderDAO.cancelOrder(orderId);
-        request.setAttribute("isSuccess", request.getParameter("isSuccess"));
-        response.sendRedirect("my-order?isSuccess=" + isSuccess);
+        processRequest(request, response);
     } 
 
     /** 
