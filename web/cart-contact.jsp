@@ -1,5 +1,3 @@
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -115,7 +113,7 @@
                                 <td>
                                     <c:if test="${item.productDetail.discount != null || item.productDetail.discount != 0}">
                                         $${item.productDetail.price * (100.0- p.productDetail.discount)/100}
-                                        <c:set value="${total + item.productDetail.price * (100.0- p.productDetail.discount)/100}" var="total"/>
+                                        <c:set value="${total + item.productDetail.price * (100.0- item.productDetail.discount)/100}" var="total"/>
                                     </c:if>
                                     <c:if test="${item.productDetail.discount == null || item.productDetail.discount == 0}">
                                         $${item.productDetail.price}
@@ -127,7 +125,7 @@
                                 </td>
                                 <td>
                                     <c:if test="${item.productDetail.discount != null || item.productDetail.discount != 0}">
-                                        $${item.quantity * (item.productDetail.price * (100.0- p.productDetail.discount)/100)}
+                                        $${item.quantity * (item.productDetail.price * (100.0- item.productDetail.discount)/100)}
                                     </c:if>
                                     <c:if test="${item.productDetail.discount == null || item.productDetail.discount == 0}">
                                         $${item.quantity * (item.productDetail.price)}
@@ -155,7 +153,7 @@
                         <c:set var="totalPrice" value="0" />
                         <c:forEach var="item" items="${cartItemsFull}">
                             <c:if test="${item.productDetail.discount != null || item.productDetail.discount != 0}">
-                                <c:set var="totalPrice" value="${totalPrice + item.quantity * (item.productDetail.price * (100.0- p.productDetail.discount)/100)}" />
+                                <c:set var="totalPrice" value="${totalPrice + item.quantity * (item.productDetail.price * (100.0- item.productDetail.discount)/100)}" />
                             </c:if>
                             <c:if test="${item.productDetail.discount == null || item.productDetail.discount == 0}">
                                 <c:set var="totalPrice" value="${totalPrice + item.quantity * (item.productDetail.price)}" />

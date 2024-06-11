@@ -1,5 +1,3 @@
-
-
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.nio.charset.StandardCharsets"%>
 

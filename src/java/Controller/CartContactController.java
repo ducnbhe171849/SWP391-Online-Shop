@@ -21,7 +21,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name="CartContactController", urlPatterns={"/public/cart-contact"})
 public class CartContactController extends HttpServlet {
    

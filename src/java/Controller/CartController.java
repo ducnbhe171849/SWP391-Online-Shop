@@ -22,7 +22,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name="CartController", urlPatterns={"/public/cart"})
 public class CartController extends HttpServlet {
    

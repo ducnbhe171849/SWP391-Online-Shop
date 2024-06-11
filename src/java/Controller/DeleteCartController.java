@@ -14,7 +14,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name="DeleteCartController", urlPatterns={"/public/delete-cart"})
 public class DeleteCartController extends HttpServlet {
    

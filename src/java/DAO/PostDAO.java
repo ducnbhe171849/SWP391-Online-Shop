@@ -14,6 +14,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+/**
+ *
+ * @author Legion
+ */
 public class PostDAO extends DBContext {
 
     Connection connection;

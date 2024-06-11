@@ -29,18 +29,18 @@ public class MarketingFeedbackController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Phan Trang
+        // Pagination parameters
         int pageNumber = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
         int pageSize = 5;
 
-        // Filter 
+        // Filter parameters
         String searchComment = request.getParameter("searchComment");
         String searchName = request.getParameter("searchName");
         String searchFullName = request.getParameter("searchFullName");
         String rating = request.getParameter("rating");
         Boolean isDeleted = (request.getParameter("status") == null || request.getParameter("status").isEmpty()) ? null : Boolean.parseBoolean(request.getParameter("status"));
 
-        // Filter theo search
+        // Perform filtering based on the provided parameters
         List<Feedback> filteredFeedbackList = feedbackDAO.getFilteredFeedbacks(searchComment, isDeleted, rating, pageNumber, pageSize);
         if (searchName != null && !searchName.isEmpty()) filteredFeedbackList = searchByProductName(filteredFeedbackList, searchName);
         if (searchFullName != null && !searchFullName.isEmpty()) filteredFeedbackList = searchByFullname(filteredFeedbackList, searchFullName);

@@ -1,5 +1,3 @@
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -54,7 +52,7 @@
                             <div class="card mt-4 p-3">
                                 <c:if test="${isSuccess ne null && isSuccess}">
                                     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
-                                        <strong>Save success!</strong> You should check in on some of those fields below.
+                                        <strong>Save success!</strong> 
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
                                 </c:if>

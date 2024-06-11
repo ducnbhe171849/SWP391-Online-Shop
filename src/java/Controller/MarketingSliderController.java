@@ -15,6 +15,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ *
+ * @author anhdu
+ */
 @WebServlet(name = "MarketingSliderController", urlPatterns = {"/marketing/slider"})
 public class MarketingSliderController extends HttpServlet {
 
@@ -34,7 +38,7 @@ public class MarketingSliderController extends HttpServlet {
         // Filter parameters
         String search = request.getParameter("search");
         String status = request.getParameter("status");
-        Boolean isDeleted = status==null ? null : (Boolean.parseBoolean(status));
+        Boolean isDeleted = (status==null || status.isEmpty()) ? null : (Boolean.parseBoolean(status));
 
         // Perform filtering based on the provided parameters
         List<Slider> filteredSliderList = sliderDAO.getFilteredSliders(search, isDeleted, pageNumber, pageSize);

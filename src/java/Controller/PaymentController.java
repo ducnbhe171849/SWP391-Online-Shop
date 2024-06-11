@@ -149,7 +149,7 @@ public class PaymentController extends HttpServlet {
             }
             new CartDAO().clearCart(user.getId());
         }
-        
+       
         respone.sendRedirect(paymentUrl);
     }
 
