@@ -1,4 +1,7 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package Controller;
 
 import DAO.StaffDAO;
@@ -11,6 +14,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ *
+ * @author anhdu
+ */
 @WebServlet(name = "LoginStaffControl", urlPatterns = {"/login-staff"})
 public class LoginStaffControl extends HttpServlet {
 
@@ -65,6 +72,12 @@ public class LoginStaffControl extends HttpServlet {
         Staff staff = staffDAO.loginStaff(email, password);
 
         if (staff != null) {
+                
+            if (staff.isIsDeleted()) {
+                request.setAttribute("errorMessage", "Banned");
+                request.getRequestDispatcher("LoginStaff.jsp").forward(request, response);
+            }
+                
             // Login successful
             request.getSession().setAttribute("staff", staff); 
 

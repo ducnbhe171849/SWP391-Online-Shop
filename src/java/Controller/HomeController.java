@@ -4,7 +4,10 @@
  */
 package Controller;
 
+import DAO.PostDAO;
 import DAO.ProductDAO;
+import Model.Category;
+import Model.Post;
 import Model.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +18,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name = "HomeController", urlPatterns = {"/home"})
 public class HomeController extends HttpServlet {
 

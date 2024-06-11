@@ -30,7 +30,7 @@ public class PostDAO extends DBContext {
         }
     }
 
-    public List<Post> getPosts(int page, int pageSize, String category, String author, String status, String search, String sortBy, String sortOrder) {
+    public List<Post> getPosts(int page, int pageSize, String category, String author, String status, String search, String sortBy, String sortOrder, String isManage) {
         List<Post> posts = new ArrayList<>();
         int offset = (page - 1) * pageSize;
         StringBuilder query = new StringBuilder("SELECT po.ID, po.[CategoryId], po.Title, po.Content, po.IsDeleted, po.CreatedAt, po.imgURL, u.Fullname as AuthorName "
@@ -39,6 +39,10 @@ public class PostDAO extends DBContext {
                 + "JOIN [dbo].[Category] c ON po.CategoryId = c.ID "
                 + "WHERE 1=1");
 
+        if(isManage.equalsIgnoreCase("no")) {
+            query.append(" AND po.[IsDeleted] = 0");
+        }
+        
         if (category != null && !category.isEmpty()) {
             query.append(" AND c.Name = ?");
         }
@@ -227,12 +231,11 @@ public class PostDAO extends DBContext {
 
         return post;
     }
-    
-    
+
     public boolean updatePost(int postId, String title, String content, int categoryId, String imgURL) {
         // SQL query to update the post
-            String query = "UPDATE [dbo].[Post] SET Title = ?, Content = ?, CategoryId = ?, imgURL = ? WHERE ID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query);){
+        String query = "UPDATE [dbo].[Post] SET Title = ?, Content = ?, CategoryId = ?, imgURL = ? WHERE ID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query);) {
             stmt.setString(1, title);
             stmt.setString(2, content);
             stmt.setInt(3, categoryId);
@@ -244,7 +247,7 @@ public class PostDAO extends DBContext {
 
             if (rowsUpdated > 0) {
                 return true;
-            } 
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -253,8 +256,8 @@ public class PostDAO extends DBContext {
 
     public boolean updatePost(int postId, int isDeleted) {
         // SQL query to update the post
-            String query = "UPDATE [dbo].[Post] SET isDeleted = ? WHERE ID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query);){
+        String query = "UPDATE [dbo].[Post] SET isDeleted = ? WHERE ID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query);) {
 
             stmt.setInt(1, isDeleted);
             stmt.setInt(2, postId);
@@ -264,11 +267,55 @@ public class PostDAO extends DBContext {
 
             if (rowsUpdated > 0) {
                 return true;
-            } 
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
+    public List<Post> getLatestPosts() {
+        List<Post> latestPosts = new ArrayList<>();
+        try {
+            String query = "SELECT TOP 5 po.ID, po.[CategoryId], po.Title, po.Content, po.IsDeleted, po.CreatedAt, po.imgURL, u.Fullname as AuthorName "
+                    + "FROM [dbo].[Post] po "
+                    + "JOIN [dbo].[User] u ON po.CreatedBy = u.ID "
+                    + "JOIN [dbo].[Category] c ON po.CategoryId = c.ID ORDER BY po.CreatedAt DESC";
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int categoryId = rs.getInt("categoryId");
+                String title = rs.getString("Title");
+                String content = rs.getString("Content");
+                boolean isDeleted = rs.getBoolean("IsDeleted");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                String authorName = rs.getString("AuthorName");
+                Post post = new Post(id, categoryId, title, content, isDeleted, createdAt, authorName);
+                post.setImgURL(rs.getString("imgURL"));
+                latestPosts.add(post);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return latestPosts;
+    }
+
+    public int getTotalPosts() {
+        int totalPosts = 0;
+        try {
+            String query = "SELECT COUNT(*) FROM [dbo].[Post]";
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                totalPosts = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalPosts;
+    }
+    
+    
 
 }

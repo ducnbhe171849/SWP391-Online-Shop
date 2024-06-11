@@ -4,7 +4,7 @@
  */
 package Model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class User {
 
@@ -16,9 +16,18 @@ public class User {
     private String address;
     private String phone;
     private boolean isDeleted;
-    private LocalDateTime createdAt;
+    private Date createdAt;
     private int createdBy;
     private String avatar;
+    private String changeHistory;
+
+    public String getChangeHistory() {
+        return changeHistory;
+    }
+
+    public void setChangeHistory(String changeHistory) {
+        this.changeHistory = changeHistory;
+    }
 
     public int getId() {
         return id;
@@ -84,11 +93,11 @@ public class User {
         this.isDeleted = isDeleted;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -108,4 +117,17 @@ public class User {
         this.avatar = avatar;
     }
     
+    public String toString(Staff staff) {
+        String time = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy"));
+        return "<tr>"
+                + "<td><strong>" + time + "</strong></td>"
+                + "<td>" + email + "</td>"
+                + "<td>" + fullname + "</td>"
+                + "<td>" + gender + "</td>"
+                + "<td>" + address + "</td>"
+                + "<td>" + phone + "</td>"
+                + "<td> Updated by: " + staff.getFullname() + "</td>"
+                + "</tr>";
+    }
+
 }

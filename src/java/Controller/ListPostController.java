@@ -16,7 +16,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name = "ListPostController", urlPatterns = {"/marketing/list-post"})
 public class ListPostController extends HttpServlet {
 
@@ -76,7 +79,7 @@ public class ListPostController extends HttpServlet {
 
         // Fetch posts for the requested page with filters and sorting
         PostDAO postDAO = new PostDAO();
-        List<Post> posts = postDAO.getPosts(page, PAGE_SIZE, category, author, status, search, sortBy, sortOrder);
+        List<Post> posts = postDAO.getPosts(page, PAGE_SIZE, category, author, status, search, sortBy, sortOrder, "Yes");
 
         // Get the total number of posts for pagination
         int totalPosts = postDAO.getTotalPosts(category, author, status, search);

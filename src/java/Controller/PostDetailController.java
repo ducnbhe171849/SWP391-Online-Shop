@@ -15,7 +15,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
+/**
+ *
+ * @author Legion
+ */
 @WebServlet(name="PostDetailController", urlPatterns={"/marketing/post-detail"})
 public class PostDetailController extends HttpServlet {
    

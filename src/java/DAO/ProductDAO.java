@@ -305,8 +305,8 @@ public class ProductDAO extends DBContext {
                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            
-            statement.setString(2, searchQuery != null && !searchQuery.isBlank()? "%" + searchQuery + "%" : null);
+
+            statement.setString(2, searchQuery != null && !searchQuery.isBlank() ? "%" + searchQuery + "%" : null);
             statement.setString(1, "%" + searchQuery + "%");
             statement.setString(4, categoryId != null && !categoryId.isBlank() ? categoryId : null);
             statement.setString(3, categoryId);
@@ -323,6 +323,7 @@ public class ProductDAO extends DBContext {
                     product.setDescription(resultSet.getString("description"));
                     product.setProductDetail(getProductDetailByProductId(product.getProductId()));
                     product.setProductDetail(getProductDetailByProductId(product.getProductId()));
+                    product.setListProductDetail(getListProductDetailsByProductId(product.getProductId()));
                     products.add(product);
                 }
             }
@@ -331,6 +332,36 @@ public class ProductDAO extends DBContext {
         }
 
         return products;
+    }
+
+    public List<ProductDetail> getListProductDetailsByProductId(int productId) {
+        List<ProductDetail> productDetails = new ArrayList<>();
+        String query = "SELECT [ID], [ProductID], [ImageURL], [Size], [Color], [Stock], [IsDeleted], [CreatedAt], [CreatedBy], [price], [discount] "
+                + "FROM [swp-online-shop].[dbo].[ProductDetail] WHERE [ProductID] = ? and IsDeleted != 1";
+
+        try (
+                PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ProductDetail productDetail = new ProductDetail();
+                    productDetail.setProductDetailId(rs.getInt("ID"));
+                    productDetail.setProductId(rs.getInt("ProductID"));
+                    productDetail.setImageURL(rs.getString("ImageURL"));
+                    productDetail.setSize(rs.getString("Size"));
+                    productDetail.setColor(rs.getString("Color"));
+                    productDetail.setStock(rs.getInt("Stock"));
+                    productDetail.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    productDetail.setCreatedBy(rs.getInt("CreatedBy"));
+                    productDetail.setPrice(rs.getDouble("price"));
+                    productDetail.setDiscount(rs.getInt("discount"));
+                    productDetails.add(productDetail);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productDetails;
     }
 
     public int countTotalProducts(String searchQuery, String categoryId) {
@@ -343,7 +374,7 @@ public class ProductDAO extends DBContext {
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(2, searchQuery != null && !searchQuery.isBlank()? "%" + searchQuery + "%" : null);
+            statement.setString(2, searchQuery != null && !searchQuery.isBlank() ? "%" + searchQuery + "%" : null);
             statement.setString(1, "%" + searchQuery + "%");
             statement.setString(4, categoryId != null && !categoryId.isBlank() ? categoryId : null);
             statement.setString(3, categoryId);
@@ -359,4 +390,93 @@ public class ProductDAO extends DBContext {
 
         return total;
     }
+
+    public List<Product> getThreeLastestProducts() {
+        List<Product> products = new ArrayList<>();
+
+        String sql = "SELECT TOP 3 "
+                + "p.ID AS ProductID, "
+                + "p.Name AS ProductName, "
+                + "c.Name AS CategoryName, "
+                + "pd.ID AS ProductDetailID, "
+                + "pd.ImageURL, "
+                + "pd.Size, "
+                + "pd.Color, "
+                + "pd.Stock, "
+                + "pd.price AS price, "
+                + "pd.discount AS discount, "
+                + "pd.CreatedAt AS ProductDetailCreatedAt, "
+                + "pd.CreatedBy AS ProductDetailCreatedBy "
+                + "FROM Product p "
+                + "INNER JOIN Category c ON p.CategoryID = c.ID "
+                + "INNER JOIN ProductDetail pd ON p.ID = pd.ProductID "
+                + "WHERE p.IsDeleted = 0 AND pd.IsDeleted = 0 "
+                + "ORDER BY p.CreatedAt ASC";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Product product = new Product();
+                product.setProductId(resultSet.getInt("ProductID"));
+                product.setProductName(resultSet.getString("ProductName"));
+                product.setCategoryName(resultSet.getString("CategoryName"));
+
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setProductDetailId(resultSet.getInt("ProductDetailID"));
+                productDetail.setImageURL(resultSet.getString("ImageURL"));
+                productDetail.setSize(resultSet.getString("Size"));
+                productDetail.setColor(resultSet.getString("Color"));
+                productDetail.setStock(resultSet.getInt("Stock"));
+                productDetail.setCreatedAt(resultSet.getTimestamp("ProductDetailCreatedAt"));
+                productDetail.setCreatedBy(resultSet.getInt("ProductDetailCreatedBy"));
+                productDetail.setPrice(resultSet.getDouble("price"));
+                productDetail.setDiscount(resultSet.getInt("discount"));
+
+                product.setProductDetail(productDetail);
+
+                products.add(product);
+            }
+        } catch (SQLException ex) {
+            System.out.println("getAllProducts: " + ex.getMessage());
+        }
+
+        return products;
+    }
+
+    public void updateQuantity(int orderId, int mode) {
+        String GET_PRODUCT_DETAIL_IDS_BY_ORDER_ID_SQL
+                = "SELECT ProductDetailID, [quantity] "
+                + "FROM [swp-online-shop].[dbo].[OrderDetail] "
+                + "WHERE OrderID = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_DETAIL_IDS_BY_ORDER_ID_SQL)) {
+
+            preparedStatement.setInt(1, orderId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    updateProductDetailQuantity(resultSet.getInt(1), resultSet.getInt(2) * mode);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("getProductDetailIDsByOrderID: " + e.getMessage());
+        }
+
+    }
+    
+    public void updateProductDetailQuantity(int productDetailId, int quantity) {
+        String UPDATE_PRODUCT_DETAIL_QUANTITY_SQL = 
+        "UPDATE ProductDetail " +
+        "SET [Stock] = [Stock] - ? " +
+        "WHERE ID = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PRODUCT_DETAIL_QUANTITY_SQL)) {
+
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, productDetailId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("updateProductDetailQuantity: " + e.getMessage());
+        }
+    }
+    
 }
