@@ -18,11 +18,11 @@ import java.sql.Statement;
  *
  * @author Legion
  */
-public class ProductDAO1 extends DBContext {
+public class ProductDAO extends DBContext {
 
     private Connection connection;
 
-    public ProductDAO1() {
+    public ProductDAO() {
         try {
             this.connection = getConnection();
         } catch (Exception e) {

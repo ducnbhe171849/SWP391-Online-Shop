@@ -124,7 +124,132 @@
                 </ul>
             </nav>
         </div>
-                            <!-- Add Product Modal -->
+
+        <!-- Edit Product Modals -->
+        <c:forEach var="product" items="${productList}">
+            <!-- Edit Product Modal -->
+            <div class="modal fade" id="editProductModal_${product.productId}" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel_${product.productId}" aria-hidden="true">
+                <!-- Modal Content -->
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProductModalLabel_${product.productId}">Edit Product</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+                            <!-- Edit Product Form -->
+                            <form action="product" method="post">
+                                <!-- Hidden Field -->
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="productId" value="${product.productId}">
+                                <div class="form-group">
+                                    <label for="imageUrl">Image</label>
+                                    <img id="image${product.productId}" class="w-100" src="${product.thumb}">
+                                    <input type="file" class="form-control" id="imageFile${product.productId}" accept="image/*" onchange="updateImage(${product.productId})">
+                                    <input type="hidden" class="form-control" id="imageUrl${product.productId}" name="imageUrl" value="${product.thumb}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productName">Product Name</label>
+                                    <input type="text" class="form-control" id="productName" name="productName" value="${product.productName}" required>
+                                </div>
+                                <div class="form-group d-none">
+                                    <label for="categoryName">Category</label>
+                                    <input type="text" class="form-control" id="categoryName" name="categoryName" value="${product.categoryName}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3">${product.description}</textarea>
+                                </div>
+                                <div class="form-group d-none">
+                                    <label for="createdBy">Created By</label>
+                                    <input type="text" class="form-control" id="createdBy" name="createdBy" value="${product.createdBy}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productName">Price</label>
+                                    <input type="number" class="form-control" id="price" name="price" value="${product.detail.price}" required min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productName">Quantity</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" value="${product.detail.stock}" required min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="isDeleted">Status</label>
+                                    <select class="form-control" id="isDeleted" name="isDeleted">
+                                        <option value="false" ${!product.isDeleted ? 'selected' : ''}>Active</option>
+                                        <option value="true" ${product.isDeleted ? 'selected' : ''}>Inactive</option>
+                                    </select>
+                                </div>
+                                <!-- Add other fields as needed -->
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info Modal -->
+            <div class="modal fade" id="productInfoModal_${product.productId}" tabindex="-1" role="dialog" aria-labelledby="productInfoModalLabel_${product.productId}" aria-hidden="true">
+                <!-- Modal Content -->
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productInfoModalLabel_${product.productId}">Product Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+
+                            <div class="text-center">
+                                <img class="w-25" src="${product.thumb}">
+                            </div>
+
+                            <!-- Product Info Table -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>ID</th>
+                                        <td>${product.productId}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <td>${product.productName}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Category</th>
+                                        <td>${product.categoryName}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Created At</th>
+                                        <td>${product.createdAt}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>${product.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Quantity</th>
+                                        <td>${product.detail.stock}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Price</th>
+                                        <td>${product.detail.price}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:forEach>
+
+        <!-- Add Product Modal -->
         <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

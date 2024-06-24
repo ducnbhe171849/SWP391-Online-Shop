@@ -52,6 +52,7 @@ public class MarketingProductController extends HttpServlet  {
 
         request.getRequestDispatcher("../marketing-product.jsp").forward(request, response);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Determine action (add or update)
@@ -70,6 +71,7 @@ public class MarketingProductController extends HttpServlet  {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
+
     private void addProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Retrieve product data from request parameters
         String productName = request.getParameter("productName");
@@ -106,4 +108,43 @@ public class MarketingProductController extends HttpServlet  {
         }
     }
 
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Retrieve product data from request parameters
+        int productId = Integer.parseInt(request.getParameter("productId"));
+        String productName = request.getParameter("productName");
+        String categoryName = request.getParameter("categoryName");
+        String description = request.getParameter("description");
+        boolean isDeleted = Boolean.parseBoolean(request.getParameter("isDeleted"));
+        int createdBy = Integer.parseInt(request.getParameter("createdBy"));
+        String imageUrl = request.getParameter("imageUrl");
+        double price = Double.parseDouble(request.getParameter("price"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+        // Create a Product object with the updated data
+        Product product = new Product();
+        product.setProductId(productId);
+        product.setProductName(productName);
+        product.setCategoryName(categoryName);
+        product.setDescription(description);
+        product.setIsDeleted(isDeleted);
+
+        
+        ProductDetail productDetail = new ProductDAO().getProductDetailByProductId(productId);
+        productDetail.setImageURL(imageUrl);
+        productDetail.setPrice(price);
+        productDetail.setStock(quantity);
+        new ProductDAO().updateProductDetail(productDetail);
+
+        // Update the product in the database
+        boolean success = productDAO.updateProduct(product);
+
+        if (success) {
+            // Redirect to product list page after successful update
+            response.sendRedirect("product?success");
+        } else {
+            // Handle update failure
+            response.sendRedirect("product?fail");
+        }
+    }
+    
 }
