@@ -6,8 +6,10 @@
 package Controller;
 
 import DAO.OrderDAO;
-import Model.User;
-import Utils.EmailService;
+import DAO.PostDAO;
+import Model.Category;
+import Model.Order;
+import Model.Staff;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,13 +17,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
  * @author Legion
  */
-@WebServlet(name="ConfirmOrderController", urlPatterns={"/customer/confirm-order"})
-public class ConfirmOrderController extends HttpServlet {
+@WebServlet(name="InventoryOrderController", urlPatterns={"/inventory/list-order"})
+public class InventoryOrderController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +41,10 @@ public class ConfirmOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ConfirmOrderController</title>");  
+            out.println("<title>Servlet InventoryOrderController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ConfirmOrderController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet InventoryOrderController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,13 +61,43 @@ public class ConfirmOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
-        User user = (User) request.getSession().getAttribute("user");
-        OrderDAO orderDAO = new OrderDAO();        
-        boolean isSuccess = orderDAO.confirmOrder(orderId);
-        EmailService.sendEmail(user.getEmail(), "Thanks Card", "Thanks for trying our product, we want to hear your feedback! Link feedback: http://localhost:8080/swp-online-shop/customer/order-detail?orderId=" + orderId);
+        OrderDAO orderDAO = new OrderDAO();
+
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String salesperson = request.getParameter("salesperson");
+        String orderStatus = request.getParameter("orderStatus");
+
+        int currentPage = 1;
+        int ordersPerPage = 10;
+
+        if (request.getParameter("page") != null) {
+            currentPage = Integer.parseInt(request.getParameter("page"));
+        }
+        
+        if(startDate == null || startDate.isEmpty()) {
+            startDate = "1990-01-01";
+        }
+        
+        if(endDate == null || endDate.isEmpty()) {
+            endDate = "9999-01-01";
+        }
+        
+        Staff staff = (Staff) request.getSession().getAttribute("staff");
+        
+        List<Order> orders = orderDAO.getOrdersByPage(currentPage, ordersPerPage, startDate, endDate, salesperson, orderStatus, staff);
+        List<Category> categories = new PostDAO().getUniqueCategories();
+        int totalOrders = orderDAO.getTotalOrderCount(startDate, endDate, salesperson, orderStatus, staff);
+        int totalPages = (int) Math.ceil((double) totalOrders / ordersPerPage);
+        
+        request.setAttribute("orders", orders);
+        request.setAttribute("categories", categories);
+        request.setAttribute("totalOrders", totalOrders);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", currentPage);
         request.setAttribute("isSuccess", request.getParameter("isSuccess"));
-        response.sendRedirect("my-order?isSuccess=" + isSuccess);
+
+        request.getRequestDispatcher("/inventory-order.jsp").forward(request, response);
     } 
 
     /** 
