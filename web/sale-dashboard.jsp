@@ -17,19 +17,23 @@
         <%@ include file="sale-sidebar.jsp" %>
 
         <!-- Main content -->
-        <div class="main-content container text-center">
+        <div class="main-content text-center">
             <h1 class="mb-4">Sale Dashboard</h1>
 
             <!-- Statistics of new orders -->
             <div class="row">
                 <div class="col-md-6 mb-4 p-3">
-                    <h3>New Orders</h3> <!-- Added title -->
-                    <canvas id="newOrdersChart"></canvas>
+                    <h3>New Orders</h3>
+                    <div class="chart-container">
+                        <canvas id="newOrdersChart"></canvas>
+                    </div>
                 </div>
                 <!-- Revenues -->
                 <div class="col-md-6 mb-4 p-3">
-                    <h3>Revenues</h3> <!-- Added title -->
-                    <canvas id="revenuesChart"></canvas>
+                    <h3>Revenues</h3>
+                    <div class="chart-container">
+                        <canvas id="revenuesChart"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -47,19 +51,18 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="end_date">Sale name:</label>
-                                <input type="text" id="end_date" name="sale" class="form-control" required value="${sale}">
+                                <input type="text" id="end_date" name="sale" class="form-control" value="${sale}">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Filter</button>
                     </form>
                 </div>
-
             </div>
 
             <!-- Trend of order counts -->
             <div class="row">
-                <div class="col-md-12">
-                    <h2>Order Trend</h2> <!-- Added title -->
+                <div class="col-md-12 chart-container">
+                    <h2>Order Trend</h2>
                     <canvas id="orderTrendChart"></canvas>
                 </div>
             </div>
