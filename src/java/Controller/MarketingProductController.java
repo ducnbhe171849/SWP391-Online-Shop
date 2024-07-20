@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.CategoryDAO;
 import DAO.ProductDAO;
+import Model.Category;
 import Model.Product;
 import Model.ProductDetail;
 import java.io.IOException;
@@ -13,8 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "MarketingProductController", urlPatterns = {"/marketing/product"})
-public class MarketingProductController extends HttpServlet  {
-    
+public class MarketingProductController extends HttpServlet {
+
     private ProductDAO productDAO;
 
     @Override
@@ -26,28 +27,43 @@ public class MarketingProductController extends HttpServlet  {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Pagination parameters
-        int pageNumber = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
-        int pageSize = 5;
+        // Pagination parameters
+        String pageParam = request.getParameter("page");
+        String searchQuery = request.getParameter("searchQuery");
+        String categoryId = request.getParameter("categoryId");
+        String minPriceParam = request.getParameter("minPrice");
+        String maxPriceParam = request.getParameter("maxPrice");
+        String color = request.getParameter("color");
+        String size = request.getParameter("size");
 
-        // Filter parameters
-        String name = request.getParameter("name");
-        String categoryString = request.getParameter("category");
-        int category = (categoryString == null || categoryString.isEmpty()) ? -1 : Integer.parseInt(categoryString);
-        String isDeletedString = request.getParameter("isDeleted");
-        Boolean isDeleted = (isDeletedString == null || isDeletedString.isEmpty()) ? null : Boolean.valueOf(isDeletedString);
+        int pageNumber = pageParam == null ? 1 : Integer.parseInt(pageParam);
+        int pageSize = 12;
 
-        // Perform filtering based on the provided parameters
-        List<Product> filteredProductList = productDAO.getFilteredProducts(name, category, isDeleted, pageNumber, pageSize);
-        int totalProducts = productDAO.getFilteredProducts(name, category, isDeleted);
-        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+        Double minPrice = minPriceParam == null || minPriceParam.isEmpty() ? null : Double.parseDouble(minPriceParam);
+        Double maxPrice = maxPriceParam == null || maxPriceParam.isEmpty() ? null : Double.parseDouble(maxPriceParam);
+
+        List<Product> products = new ProductDAO().getProductsByPage2(pageNumber, pageSize, searchQuery, categoryId, minPrice, maxPrice, color, size);
+        int total = new ProductDAO().countTotalProducts(searchQuery, categoryId, minPrice, maxPrice, color, size);
+
+        int endPage = total % pageSize == 0 ? total / pageSize : total / pageSize + 1;
+        List<Category> categories = new CategoryDAO().getCategories();
+        List<String> colors = new ProductDAO().getAvailableColors();
+        List<String> sizes = new ProductDAO().getAvailableSizes();
 
         // Forward the filtered product list and pagination parameters to the JSP
-        request.setAttribute("productList", filteredProductList);
+        request.setAttribute("productList", products);
         request.setAttribute("currentPage", pageNumber);
         request.setAttribute("pageSize", pageSize);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("name", name);
-        request.setAttribute("isDeletedString", isDeletedString);
+        request.setAttribute("categories", categories);
+        request.setAttribute("totalPages", endPage);
+        request.setAttribute("colors", colors);
+        request.setAttribute("sizes", sizes);
+        request.setAttribute("searchQuery", searchQuery);
+        request.setAttribute("categoryId", categoryId);
+        request.setAttribute("minPrice", minPrice);
+        request.setAttribute("maxPrice", maxPrice);
+        request.setAttribute("selectedColor", color);
+        request.setAttribute("selectedSize", size);
         request.setAttribute("categories", new CategoryDAO().getCategories());
 
         request.getRequestDispatcher("../marketing-product.jsp").forward(request, response);
@@ -91,14 +107,27 @@ public class MarketingProductController extends HttpServlet  {
 
         // Add the product to the database
         int productId = productDAO.addProduct(newProduct);
-        
+
         ProductDetail productDetail = new ProductDetail();
         productDetail.setProductId(productId);
         productDetail.setImageURL(imageUrl);
         productDetail.setPrice(price);
         productDetail.setStock(quantity);
         
-        new ProductDAO().addProductDetail(productDetail);
+        String[] sizes = request.getParameterValues("size");
+        String[] colors = request.getParameterValues("color");
+        if (sizes != null && colors != null) {
+            for (String size : sizes) {
+                for (String color : colors) {
+
+                    productDetail.setColor(color);
+                    productDetail.setSize(size);
+                    
+                    new ProductDAO().addProductDetail(productDetail);
+                    
+                }
+            }
+        }
 
         if (productId != -1) {
             // Redirect to product list page after successful addition
@@ -119,7 +148,8 @@ public class MarketingProductController extends HttpServlet  {
         String imageUrl = request.getParameter("imageUrl");
         double price = Double.parseDouble(request.getParameter("price"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
-
+        String size = request.getParameter("size");
+        String color = request.getParameter("color");
         // Create a Product object with the updated data
         Product product = new Product();
         product.setProductId(productId);
@@ -128,10 +158,11 @@ public class MarketingProductController extends HttpServlet  {
         product.setDescription(description);
         product.setIsDeleted(isDeleted);
 
-        
         ProductDetail productDetail = new ProductDAO().getProductDetailByProductId(productId);
         productDetail.setImageURL(imageUrl);
         productDetail.setPrice(price);
+        productDetail.setColor(color);
+        productDetail.setSize(size);
         productDetail.setStock(quantity);
         new ProductDAO().updateProductDetail(productDetail);
 
@@ -146,5 +177,5 @@ public class MarketingProductController extends HttpServlet  {
             response.sendRedirect("product?fail");
         }
     }
-    
+
 }
