@@ -178,6 +178,23 @@
                                         <li><strong>STK: </strong> 01239817231123</li>
                                         <li> <strong>BANK: </strong>MB Bank - HA NOI</li>
                                         <li><strong>OWNER: </strong>Fashion shop</li>
+                                         <li>
+                                            <div>
+                                                <b>Amount to be transfer:</b> $<span id="total-price">
+                                                    <c:set var="totalPrice" value="0" />
+                                                    <c:forEach var="item" items="${cartItemsFull}">
+                                                        <c:if test="${item.productDetail.discount != null || item.productDetail.discount != 0}">
+                                                            <c:set var="totalPrice" value="${totalPrice + item.quantity * (item.productDetail.price * (100.0- item.productDetail.discount)/100)}" />
+                                                        </c:if>
+                                                        <c:if test="${item.productDetail.discount == null || item.productDetail.discount == 0}">
+                                                            <c:set var="totalPrice" value="${totalPrice + item.quantity * (item.productDetail.price)}" />
+                                                        </c:if>
+
+                                                    </c:forEach>
+                                                    ${totalPrice}
+                                                </span>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </div> 
                             </td> 
