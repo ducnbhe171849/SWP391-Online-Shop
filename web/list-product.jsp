@@ -1,3 +1,8 @@
+<%-- 
+    Document   : Home
+    Created on : Jan 7, 2024, 9:04:10 PM
+    Author     : Admin
+--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -69,20 +74,41 @@
                 </div>
             </header>
             <!-- Section-->
-            <section class="py-5">
-                <div class="container px-4 px-lg-5 mt-5">
+            <section class="py-5 ">
+                <div class="container px-4 px-lg-5 mt-5 d-flex justify-content-between">
                     <!-- Search and Filter Form -->
-                    <form action="list-product" method="get" class="d-flex mb-4">
-                        <input class="form-control me-2" type="search" name="searchQuery" placeholder="Search" aria-label="Search" value="${searchQuery}">
-                    <select class="form-select me-2" name="categoryId">
-                        <option value="">All Categories</option>
-                        <c:forEach items="${categories}" var="category">
-                            <option value="${category.ID}" <c:if test="${categoryId == category.ID}">selected</c:if>>${category.categoryName}</option>
-                        </c:forEach>
-                    </select>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div class="col-3 mr-2">
+                        <form action="list-product" method="get" class="d-flex mb-4 flex-column justify-content-between">
+                            <input class="form-control me-2 mb-4" type="search" name="searchQuery" placeholder="Search" aria-label="Search" value="${searchQuery}">
+
+                        <select class="form-select me-2 mb-4" name="categoryId">
+                            <option value="">All Categories</option>
+                            <c:forEach items="${categories}" var="category">
+                                <option value="${category.ID}" <c:if test="${categoryId == category.ID}">selected</c:if>>${category.categoryName}</option>
+                            </c:forEach>
+                        </select>
+
+                        <input class="form-control me-2 mb-4" type="number" name="minPrice" placeholder="Min Price" value="${minPrice}">
+                        <input class="form-control me-2 mb-4" type="number" name="maxPrice" placeholder="Max Price" value="${maxPrice}">
+
+                        <select class="form-select me-2 mb-4" name="color">
+                            <option value="">All Colors</option>
+                            <c:forEach items="${colors}" var="color">
+                                <option value="${color}" <c:if test="${selectedColor == color}">selected</c:if>>${color}</option>
+                            </c:forEach>
+                        </select>
+
+                        <select class="form-select me-2 mb-4" name="size">
+                            <option value="">All Sizes</option>
+                            <c:forEach items="${sizes}" var="size">
+                                <option value="${size}" <c:if test="${selectedSize == size}">selected</c:if>>${size}</option>
+                            </c:forEach>
+                        </select>
+
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center col-9">
                     <c:forEach items="${products}" var="p">
                         <div class="col mb-5">
                             <div class="card h-100">
@@ -114,11 +140,11 @@
                                 <!-- Product actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="product-detail?id=${p.productId}">View details</a></div>
-                                    <div class="text-center mt-3">
+<!--                                    <div class="text-center mt-3">
                                         <button  type="button" class="btn btn-outline-dark mt-auto text-center" data-bs-toggle="modal" data-bs-target="#exampleModal-${p.productId}">
                                             Add To Cart
                                         </button>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -154,24 +180,25 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="addToCart(document.getElementById('selectedProductDetailId').value)">Submit</button>
+                                        <button type="button" class="btn btn-primary" onclick="addToCart(${p.productDetail.productDetailId})">Submit</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </c:forEach> 
+                    <!-- Pagination -->
+                    <div class="row mb-5">
+                        <form action="list-product" method="get" class="d-flex text-center justify-content-center align-items-lg-center">
+                            <input type="hidden" name="searchQuery" value="${searchQuery}">
+                            <input type="hidden" name="categoryId" value="${categoryId}">
+                            <button style="margin-right: 10px; width: fit-content" class="btn btn-primary">Go to Page:</button>
+                            <input class="form-control" oninput="valid(this)" style="width: 30px; font-size: 15px; padding: 5px; height: 25px; margin-right: 5px" pattern="\d{1,}" title="Enter number" type="text" name="page" value="${page}" min="1" max="${endPage}">
+                            / ${endPage}
+                        </form>
+                    </div>
                 </div>
 
-                <!-- Pagination -->
-                <div class="row mb-5">
-                    <form action="list-product" method="get" class="d-flex text-center justify-content-center align-items-lg-center">
-                        <input type="hidden" name="searchQuery" value="${searchQuery}">
-                        <input type="hidden" name="categoryId" value="${categoryId}">
-                        <button style="margin-right: 10px; width: fit-content" class="btn btn-primary">Go to Page:</button>
-                        <input class="form-control" oninput="valid(this)" style="width: 30px; font-size: 15px; padding: 5px; height: 25px; margin-right: 5px" pattern="\d{1,}" title="Enter number" type="text" name="page" value="${page}" min="1" max="${endPage}">
-                        / ${endPage}
-                    </form>
-                </div>
+
             </div>
         </section>
 
@@ -211,6 +238,7 @@
                                                 fetch('add-cart?id=' + id + '&quantity=' + quantity);
                                                 window.alert('ADDED Successfully');
                                             }
+
 
         </script>
 
