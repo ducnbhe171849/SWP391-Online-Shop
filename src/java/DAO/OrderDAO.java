@@ -62,9 +62,11 @@ public class OrderDAO {
                 boolean isDeleted = rs.getBoolean("IsDeleted");
                 Timestamp createdAt = rs.getTimestamp("CreatedAt");
                 int createdBy = rs.getInt("CreatedBy");
+                String paymentMethod = rs.getString("paymentMethod");
 
                 // Create an Order object with extracted data
                 Order order = new Order(id, userId, fullName, address, phone, status, isDeleted, createdAt, createdBy);
+                order.setPaymentMethod(paymentMethod);
                 order.setNotes(rs.getString("notes"));
                 orders.add(order);
             }
@@ -145,8 +147,11 @@ public class OrderDAO {
                 Timestamp createdAt = rs.getTimestamp("CreatedAt");
                 int createdBy = rs.getInt("CreatedBy");
 
+                String paymentMethod = rs.getString("paymentMethod");
+
                 // Create an Order object with extracted data
                 Order order = new Order(id, userId, fullName, address, phone, status, isDeleted, createdAt, createdBy);
+                order.setPaymentMethod(paymentMethod);
                 order.setNotes(rs.getString("notes"));
                 orders.add(order);
             }
@@ -160,8 +165,8 @@ public class OrderDAO {
         try {
             String UPDATE_ORDER_STATUS_SQL
                     = "UPDATE [dbo].[Order] "
-                    + "SET [Status] = 'canceled' "
-                    + "WHERE [Status] == 'Not yet' "
+                    + "SET [Status] = 'Canceled' "
+                    + "WHERE [Status] Like 'Not yet' "
                     + "AND [CreatedAt] < DATEADD(DAY, -1, GETDATE())";
             // Execute the update statement
             PreparedStatement pstmt = connection.prepareStatement(UPDATE_ORDER_STATUS_SQL);
@@ -169,7 +174,7 @@ public class OrderDAO {
             return rowsUpdated > 0;
         } catch (SQLException e) {
             System.out.println("autoCanceled: " + e.getMessage());
-        } 
+        }
         return false;
     }
 
@@ -229,7 +234,7 @@ public class OrderDAO {
 
             if (staff.getRole() == 6) {
                 query.append(" AND o.Status IN  ");
-                query.append(String.valueOf("('Approved', 'Shipping', 'Failed')"));
+                query.append(String.valueOf("('Approved', 'Packaging', 'Delivering', 'Reject')"));
             }
 
             if (salesperson != null && !salesperson.isEmpty()) {
@@ -269,8 +274,11 @@ public class OrderDAO {
                 Timestamp createdAt = rs.getTimestamp("CreatedAt");
                 int createdBy = rs.getInt("CreatedBy");
 
+                String paymentMethod = rs.getString("paymentMethod");
+
                 // Create an Order object with extracted data
                 Order order = new Order(id, userId, fullName, address, phone, status, isDeleted, createdAt, createdBy);
+                order.setPaymentMethod(paymentMethod);
                 order.setNotes(rs.getString("notes"));
                 orders.add(order);
             }
@@ -346,6 +354,8 @@ public class OrderDAO {
                 order.setCreatedBy(rs.getInt("createdBy"));
                 order.setNotes(rs.getString("notes"));
                 order.setTotalCost(getTotal(orderId));
+                String paymentMethod = rs.getString("paymentMethod");
+                order.setPaymentMethod(paymentMethod);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -387,6 +397,23 @@ public class OrderDAO {
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
                 isCanceled = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isCanceled;
+    }
+
+    public boolean failOrder(int orderId) {
+        boolean isCanceled = false;
+        try {
+            String sql = "UPDATE [Order] SET status = 'Failed' WHERE ID = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, orderId);
+
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                isCanceled = true;
                 new ProductDAO().updateQuantity(orderId, -1);
             }
         } catch (SQLException e) {
@@ -416,7 +443,7 @@ public class OrderDAO {
     public boolean confirmOrder(int orderId) {
         boolean isCanceled = false;
         try {
-            String sql = "UPDATE [Order] SET status = 'Received' WHERE ID = ?";
+            String sql = "UPDATE [Order] SET status = 'Close' WHERE ID = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, orderId);
 
@@ -469,9 +496,38 @@ public class OrderDAO {
         return 4;
     }
 
+    public int getSaleTotalOrder(int saleId) {
+        String SQL = "SELECT \n"
+                + "                         s.ID AS StaffID,\n"
+                + "                         s.Fullname,\n"
+                + "                         s.Email,\n"
+                + "                         COUNT(o.ID) AS OrderCount\n"
+                + "                     FROM \n"
+                + "                         [swp-online-shop].[dbo].[Staff] s\n"
+                + "                     LEFT JOIN \n"
+                + "                         [swp-online-shop].[dbo].[Order] o\n"
+                + "                     ON \n"
+                + "                         s.ID = o.CreatedBy\n"
+                + "                     WHERE \n"
+                + "                         s.Role = 3 and s.ID = ?\n"
+                + "                     GROUP BY \n"
+                + "                         s.ID, s.Fullname, s.Email";
+        try {
+            PreparedStatement ps = connection.prepareStatement(SQL);
+            ps.setInt(1, saleId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(4);
+            }
+        } catch (SQLException e) {
+            System.out.println("getSaleTotalOrder: " + e.getMessage());
+        }
+        return 4;
+    }
+
     public int createOrder(Order order) {
         int orderId = 0;
-        String INSERT_ORDER_SQL = "INSERT INTO [Order] (userId, fullname, address, phone, status, isDeleted, createdBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String INSERT_ORDER_SQL = "INSERT INTO [Order] (userId, fullname, address, phone, status, isDeleted, createdBy, notes, [paymentMethod]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ORDER_SQL, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, order.getUserId());
             preparedStatement.setString(2, order.getFullname());
@@ -481,6 +537,7 @@ public class OrderDAO {
             preparedStatement.setBoolean(6, false);
             preparedStatement.setInt(7, getSaleIdWithLeastOrder());
             preparedStatement.setString(8, order.getNotes());
+            preparedStatement.setString(9, order.getPaymentMethod());
             preparedStatement.executeUpdate();
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
@@ -628,20 +685,17 @@ public class OrderDAO {
 
         return orderDetails;
     }
-    
-    public boolean isFeedbacked(int orderId, int productDetailId) {
+
+    public boolean isFeedbacked(int orderDetailId) {
         String GET_ORDER_DETAILS_NOT_FEEDBACKED_SQL
-                = "SELECT *\n" +
-"                 FROM [swp-online-shop].[dbo].[OrderDetail] od \n" +
-"                 LEFT JOIN [swp-online-shop].[dbo].[Feedback] fb ON od.ID = fb.OrderDetailID \n" +
-"                 WHERE fb.OrderDetailID IS NULL \n" +
-"                 AND od.OrderID = ? and od.ProductDetailID = ?\n" +
-"                 AND od.IsDeleted = 0";
+                = "SELECT * \n"
+                + "                 FROM [swp-online-shop].[dbo].[OrderDetail] od  \n"
+                + "                  JOIN [swp-online-shop].[dbo].[Feedback] fb ON od.ID = fb.OrderDetailID  \n"
+                + "                 WHERE od.IsDeleted = 0 AND od.ID = ?";
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDER_DETAILS_NOT_FEEDBACKED_SQL)) {
 
-            preparedStatement.setInt(1, orderId);
-            preparedStatement.setInt(2, productDetailId);
+            preparedStatement.setInt(1, orderDetailId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return true;
