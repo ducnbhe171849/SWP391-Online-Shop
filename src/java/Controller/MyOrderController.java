@@ -67,7 +67,7 @@ public class MyOrderController extends HttpServlet {
             throws ServletException, IOException {
         OrderDAO orderDAO = new OrderDAO();
         ProductDAO productDAO = new ProductDAO();
-
+        orderDAO.autoCanceled();
         int currentPage = 1;
         int ordersPerPage = 10; // Set the number of orders per page
 
@@ -76,20 +76,28 @@ public class MyOrderController extends HttpServlet {
         if (request.getParameter("page") != null) {
             currentPage = Integer.parseInt(request.getParameter("page"));
         }
+        
+        String orderDate = request.getParameter("orderDate");
+        String orderTime = request.getParameter("orderTime");
+        String orderStatus = request.getParameter("orderStatus");
 
-        List<Order> orders = orderDAO.getOrdersByPage(currentPage, ordersPerPage, userId);
+        List<Order> orders = orderDAO.getOrdersByPage(currentPage, ordersPerPage, userId, orderDate, orderTime, orderStatus);
         List<Product> products = productDAO.getThreeLastestProducts();
         List<Category> categories = new PostDAO().getUniqueCategories();
-        int totalOrders = orderDAO.getTotalOrderCount(userId);
+        int totalOrders = orderDAO.getTotalOrderCount(userId, orderDate, orderTime, orderStatus);
         int totalPages = (int) Math.ceil((double) totalOrders / ordersPerPage);
 
         // Set order data in request attribute (security concern)
         request.setAttribute("orders", orders);
+        request.setAttribute("orderDate", orderDate);
+        request.setAttribute("orderTime", orderTime);
+        request.setAttribute("orderStatus", orderStatus);
         request.setAttribute("products", products);
         request.setAttribute("categories", categories);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("isSuccess", request.getParameter("isSuccess"));
+        request.setAttribute("type", request.getParameter("type"));
         request.getRequestDispatcher("/my-order.jsp").forward(request, response);
     }
 

@@ -16,10 +16,10 @@
     <body>
 
         <!-- Sidebar -->
-        <%@ include file="sale-sidebar.jsp" %>
+        <%@ include file="inventory-sidebar.jsp" %>
 
         <!-- Main content -->
-        <div class="main-content container" style="margin-top: 10%; margin-bottom: 10%">
+        <div class="main-content" style="margin-top: 10%; margin-bottom: 10%">
             <c:if test="${isSuccess ne null && isSuccess}">
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
                     <strong>Save success!</strong> 
@@ -36,6 +36,7 @@
             <p>Order Date: ${order.createdAt}</p>
             <p>Total Cost: $${order.totalCost}</p>
             <p>Status: ${order.status}</p>
+            <p>Payment Method: ${order.paymentMethod}</p>
 
             <!-- Receiver Information -->
             <h3>Receiver Information</h3>
@@ -83,9 +84,16 @@
 
 
             <div class="mt-4">
-                <a class="btn btn-success" href="shipping-order?orderId=${order.id}">
-                    Shipping
-                </a>
+                <c:if test="${order.status eq 'Approved'}">
+                    <a href="shipping-order?orderId=${order.id}&status=Packaging" class="btn btn-primary">Packaging</a>
+                </c:if>
+                <c:if test="${order.status eq 'Packaging'}">
+                    <a href="shipping-order?orderId=${order.id}&status=Delivering" class="btn btn-primary">Delivering</a>
+                </c:if>
+                <c:if test="${order.status eq 'Delivering'}">
+                    <a href="shipping-order?orderId=${order.id}&status=Success" class="btn btn-success">Success</a>
+                    <a href="shipping-order?orderId=${order.id}&status=Failed" class="btn btn-danger">Failed</a>
+                </c:if>
             </div>
 
         </div>

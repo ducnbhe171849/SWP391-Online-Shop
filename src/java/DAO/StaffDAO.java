@@ -28,7 +28,7 @@ public class StaffDAO {
 
     // Create (Register)
     public boolean registerStaff(Staff staff) {
-        String query = "INSERT INTO [Staff] (Email, Password, Fullname, Gender, Address, Phone, Role, CreatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO [Staff] (Email, Password, Fullname, Gender, Address, Phone, Role, CreatedBy, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             ps = conn.prepareStatement(query);
             ps.setString(1, staff.getEmail());
@@ -39,6 +39,7 @@ public class StaffDAO {
             ps.setString(6, staff.getPhone());
             ps.setInt(7, staff.getRole());
             ps.setInt(8, staff.getCreatedBy());
+            ps.setString(9, staff.getAvatar());
             int result = ps.executeUpdate();
             return result > 0;
         } catch (SQLException e) {
@@ -177,7 +178,7 @@ public class StaffDAO {
         return staffList;
     }
 
-    public List<Staff> getFilteredStaff(String fullName, String email, String phone, int role, String gender, int pageNumber, int pageSize) {
+    public List<Staff> getFilteredStaff(String fullName, String email, String phone, int role, String gender, Boolean isDeleted, int pageNumber, int pageSize) {
         List<Staff> filteredUserList = new ArrayList<>();
         String query = "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY ID) AS RowNum FROM [Staff] WHERE 1=1";
         // Add filter conditions
@@ -195,6 +196,9 @@ public class StaffDAO {
         }
         if (gender != null && !gender.isEmpty()) {
             query += " AND Gender = '" + gender + "'";
+        }
+        if (isDeleted != null) {
+            query += "AND IsDeleted = " + (isDeleted ? "1" : "0");
         }
         // Add pagination
         query += ") AS SubQuery WHERE RowNum BETWEEN ? AND ?";
@@ -227,7 +231,7 @@ public class StaffDAO {
         return filteredUserList;
     }
     
-    public List<Staff> getFilteredStaff(String fullName, String email, int role, String gender) {
+    public List<Staff> getFilteredStaff(String fullName, String email, int role, String gender, Boolean isDeleted) {
         List<Staff> filteredUserList = new ArrayList<>();
         String query = "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY ID) AS RowNum FROM [Staff] WHERE 1=1";
         // Add filter conditions
@@ -242,6 +246,9 @@ public class StaffDAO {
         }
         if (gender != null && !gender.isEmpty()) {
             query += " AND Gender LIKE '%" + gender + "%'";
+        }
+        if (isDeleted != null) {
+            query += "AND IsDeleted = " + (isDeleted ? "1" : "0");
         }
         // Add pagination
         query += ") AS SubQuery";
@@ -272,7 +279,7 @@ public class StaffDAO {
 
     // Update (Update Staff)
     public boolean updateStaff(Staff staff) {
-        String query = "UPDATE [Staff] SET Email=?, Password=?, Fullname=?, Gender=?, Address=?, Phone=?, Role=?, IsDeleted=?, CreatedBy=? WHERE ID=?";
+        String query = "UPDATE [Staff] SET Email=?, Password=?, Fullname=?, Gender=?, Address=?, Phone=?, Role=?, IsDeleted=?, CreatedBy=?, Avatar=? WHERE ID=?";
         try {
             ps = conn.prepareStatement(query);
             ps.setString(1, staff.getEmail());
@@ -284,7 +291,8 @@ public class StaffDAO {
             ps.setInt(7, staff.getRole());
             ps.setBoolean(8, staff.isIsDeleted());
             ps.setInt(9, staff.getCreatedBy());
-            ps.setInt(10, staff.getId());
+            ps.setString(10, staff.getAvatar());
+            ps.setInt(11, staff.getId());
             int result = ps.executeUpdate();
             return result > 0;
         } catch (SQLException e) {

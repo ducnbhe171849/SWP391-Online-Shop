@@ -4,7 +4,7 @@
 <html>
 
     <head>
-        <title>Shopping Cart</title>
+        <title>My Orders</title>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
         <style>
             #product:hover, #product *:hover {
@@ -80,27 +80,50 @@
 
                     </c:forEach>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+                  <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
-                    <p>Address: 123 Main St, Anytown, USA</p>
+                    <p>Email: fashionshop@gmail.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-10">
+                <h2>My Orders</h2>
                 <c:if test="${isSuccess ne null && isSuccess}">
                     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
-                        <strong>Save success!</strong> You should check in on some of those fields below.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('mess').style.display = 'none'"></button>
+                        <strong>${type} Order Successfully</strong> You should check in on some of those fields below.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Confirm" onclick="document.getElementById('mess').style.display = 'none'"></button>
                     </div>
                 </c:if>
                 <c:if test="${isSuccess ne null && !isSuccess}">
                     <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="mess">
-                        <strong>Save failed!</strong> You should check your network.
+                        <strong>${type} Order failed!</strong> You should check your network.
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </c:if>
-                <h2>My Orders</h2>
+                <form method="GET" action="my-order" class="form-inline mb-3">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="orderDate" class="sr-only">Order Date:</label>
+                        <input type="date" id="orderDate" name="orderDate" class="form-control" value="${orderDate}" placeholder="Order Date">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="orderTime" class="sr-only">Order Time:</label>
+                        <input type="time" id="orderTime" name="orderTime" class="form-control" value="${orderTime}" placeholder="Order Time">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="orderStatus" class="sr-only">Order Status:</label>
+                        <select id="orderStatus" name="orderStatus" class="form-control">
+                            <option value="">All</option>
+                            <option value="Close" ${orderStatus eq"Close" ? "selected" : ""}>Close</option>
+                            <option value="Submitted" ${orderStatus eq"Submitted" ? "selected" : ""}>Submitted</option>
+                            <option value="Success" ${orderStatus eq"Success" ? "selected" : ""}>Success</option>
+                            <option value="Request Cancel" ${orderStatus eq "Request Cancel" ? "selected" : ""}>Request Cancel</option>
+                            <option value="Canceled" ${orderStatus eq "Canceled" ? "selected" : ""}>Canceled</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Filter</button>
+                </form>
+
                 <table class="table">
                     <thead>
                         <tr>
@@ -108,8 +131,9 @@
                             <th>Order Date</th>
                             <th>Address</th>
                             <th>Phone</th>
-                            <th>Total</th>
+                            <th>Total Cost</th>
                             <th>Status</th>
+                            <th>Payment Method</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -122,11 +146,15 @@
                                 <td>${item.phone}</td>
                                 <td>$${item.totalCost}</td>
                                 <td>${item.status}</td>
+                                <td>${item.paymentMethod}</td>
                                 <td>
-                                    <c:if test="${item.status eq 'shipping'}">
-                                        <a href="confirm-order?orderId=${item.id}" class="btn btn-primary">Received</a>
+                                    <c:if test="${item.status eq 'Success'}">
+                                        <a href="confirm-order?orderId=${item.id}" class="btn btn-primary">Close</a>
                                     </c:if>
-                                    
+                                        
+                                    <c:if test="${item.status eq 'Wait for pay' && !item.isExpired()}">
+                                        <a href="../public/payment?orderId=${item.id}&method=repay&amount=${item.totalCost}" class="btn btn-primary">Continue payment</a>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -137,19 +165,19 @@
                     <ul class="pagination justify-content-center">
                         <c:if test="${currentPage > 1}">
                             <li class="page-item">
-                                <a class="page-link" href="?page=${currentPage - 1}" aria-label="Previous">
+                                <a class="page-link" href="?page=${currentPage - 1}&orderDate=${orderDate}&orderTime=${orderTime}&orderStatus=${orderStatus}" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                         </c:if>
                         <c:forEach var="i" begin="1" end="${totalPages}">
                             <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                <a class="page-link" href="?page=${i}">${i}</a>
+                                <a class="page-link" href="?page=${i}&orderDate=${orderDate}&orderTime=${orderTime}&orderStatus=${orderStatus}">${i}</a>
                             </li>
                         </c:forEach>
                         <c:if test="${currentPage < totalPages}">
                             <li class="page-item">
-                                <a class="page-link" href="?page=${currentPage + 1}" aria-label="Next">
+                                <a class="page-link" href="?page=${currentPage + 1}&orderDate=${orderDate}&orderTime=${orderTime}&orderStatus=${orderStatus}" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>

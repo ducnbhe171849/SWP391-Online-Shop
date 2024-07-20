@@ -14,7 +14,15 @@
         <style>
             .carousel-item img {
                 width: 100%;
-               height: auto;
+                height: auto;
+            }
+            .images{
+                height:280px;
+                object-fit: cover
+            }
+            .blog{
+                height:443.75px;
+                object-fit: cover
             }
         </style>
     </head>
@@ -61,23 +69,23 @@
                                 </c:if>
 
                                 <!-- Product image-->
-                                <img class="card-img-top" src="${p.productDetail.imageURL}" alt="..." />
+                                <img class="images card-img-top" src="${p.productDetail.imageURL}" alt="..." />
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
                                         <!-- Product name-->
                                         <h5 class="fw-bolder">${p.productName}</h5>
-                                        <!-- Product reviews-->
+<!--                                         Product reviews
                                         <div class="d-flex justify-content-center small text-warning mb-2">
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
-                                        </div>
+                                        </div>-->
                                         <!-- Product price-->
-                                        <span class="text-muted text-decoration-line-through">$20.00</span>
-                                        $${p.productDetail.price}
+                                        <span class="text-muted text-decoration-line-through">${p.productDetail.price}$</span>
+                                        <b style="color:red">${p.productDetail.price * (1 - p.productDetail.discount/100)}$</b>
                                     </div>
                                 </div>
                                 <!-- Product actions-->
@@ -88,12 +96,8 @@
                         </div>
                     </c:forEach> 
                 </div>
-                <div class="row mb-5 ">
-                    <form action="home" class="d-flex text-center justify-content-center align-items-lg-center">
-                        <button style="margin-right: 10px; width: fit-content"class="btn btn-primary">Go to Page:</button> 
-                        <input class="form-control" oninput="valid(this)" style="width: 30px; font-size: 15px; padding: 5px; height: 25px; margin-right: 5px"  type="input" name="page" value="${page}" pattern="\d{1,}" title="Enter number"> /  ${endPage}
-                    </form>
-
+                <div class="row d-flex justify-content-center">
+                    <a class="btn btn-primary col-lg-2" href="public/list-product">See more</a>
                 </div>
             </div>   
         </section>
@@ -109,7 +113,7 @@
                         <div class="col-md-4 mb-4">
                             <div class="card">
                                 <a href="public/post-detail?id=${post.id}">
-                                    <img src="${post.imgURL}" class="card-img-top" alt="${post.title}">
+                                    <img src="${post.imgURL}" class="blog card-img-top" alt="${post.title}">
                                     <div class="card-body">
                                         <h5 class="card-title">${post.title}</h5>
                                         <p class="card-text">${fn:substring(post.content, 0, 50)}...</p>

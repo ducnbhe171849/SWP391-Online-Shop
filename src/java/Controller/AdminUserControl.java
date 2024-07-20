@@ -42,12 +42,14 @@ public class AdminUserControl extends HttpServlet {
         String roleString = request.getParameter("role");
         int role = (roleString==null || roleString.isEmpty()) ? -1 : Integer.parseInt(roleString);
         String gender = request.getParameter("gender");
+        String statusString = request.getParameter("status");
+        Boolean status = (statusString==null || statusString.isEmpty()) ? null : Boolean.parseBoolean(statusString);
 
         // Perform filtering based on the provided parameters
-        List<Staff> filteredStaffList = staffDAO.getFilteredStaff(fullName, email, phone, role, gender, pageNumber, pageSize);
+        List<Staff> filteredStaffList = staffDAO.getFilteredStaff(fullName, email, phone, role, gender, status, pageNumber, pageSize);
 
         // Get total number of staffs matching the filter criteria
-        int totalStaffs = staffDAO.getFilteredStaff(fullName, email, role, gender).size();
+        int totalStaffs = staffDAO.getFilteredStaff(fullName, email, role, gender, status).size();
 
         // Calculate total number of pages
         int totalPages = (int) Math.ceil((double) totalStaffs / pageSize);
@@ -88,6 +90,7 @@ public class AdminUserControl extends HttpServlet {
         boolean gender = Boolean.parseBoolean(request.getParameter("gender"));
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
+        String avatar = request.getParameter("imageUrl");
 
         boolean success = false;
 
@@ -103,6 +106,7 @@ public class AdminUserControl extends HttpServlet {
             newStaff.setAddress(address);
             newStaff.setPhone(phone);
             newStaff.setRole(role);
+            newStaff.setAvatar(avatar);
 
             success = staffDAO.registerStaff(newStaff);
 
@@ -127,6 +131,7 @@ public class AdminUserControl extends HttpServlet {
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
         boolean status = Boolean.parseBoolean(request.getParameter("status"));
+        String avatar = request.getParameter("imageUrl");
 
         // Create a Staff object with the updated data
         Staff staff = new StaffDAO().getStaffById(staffId);
@@ -138,6 +143,7 @@ public class AdminUserControl extends HttpServlet {
         staff.setAddress(address);
         staff.setPhone(phone);
         staff.setIsDeleted(status);
+        staff.setAvatar(avatar);
 
         // Update the staff
         boolean success = staffDAO.updateStaff(staff);

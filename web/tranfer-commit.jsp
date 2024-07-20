@@ -1,9 +1,3 @@
-<%-- 
-    Document   : cart
-    Created on : Jun 4, 2024, 7:18:47 PM
-    Author     : Legion
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -86,11 +80,11 @@
 
                     </c:forEach>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+                 <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
-                    <p>Address: 123 Main St, Anytown, USA</p>
+                    <p>Email: fashionshop@gmail.com.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-10">
@@ -183,7 +177,7 @@
                                     <ul style="list-style-type: none">
                                         <li><strong>STK: </strong> 01239817231123</li>
                                         <li> <strong>BANK: </strong>MB Bank - HA NOI</li>
-                                        <li><strong>OWNER: </strong>Sloth shop</li>
+                                        <li><strong>OWNER: </strong>Fashion shop</li>
                                     </ul>
                                 </div> 
                             </td> 

@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Order Details</title>
+        <title>Feedback List</title>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -74,11 +74,11 @@
 
                     </c:forEach>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+              <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
-                    <p>Address: 123 Main St, Anytown, USA</p>
+                    <p>Email: fashionshop@gmail.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-9">

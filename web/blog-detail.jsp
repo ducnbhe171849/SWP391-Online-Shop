@@ -56,11 +56,12 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="static-contacts" style="margin-top: 15px">
-                        <h3>Contact Us</h3>
-                        <p>Email: contact@example.com</p>
-                        <p>Phone: 123-456-7890</p>
-                    </div>
+                       <div id="static-contacts" style="margin-top: 15px">
+                    <h3>Contact Us</h3>
+                    <p>Email: fashionshop@gmail.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
+                </div>
                 </div>
                 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                     <header class="py-5" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${post.imgURL});">

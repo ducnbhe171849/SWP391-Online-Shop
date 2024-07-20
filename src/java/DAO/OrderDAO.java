@@ -118,7 +118,7 @@ public class OrderDAO {
                 sql += " AND status = ?";
             }
 
-            sql += " AND [UserID] = ? ORDER BY createdAt OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            sql += " AND [UserID] = ? ORDER BY createdAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
             PreparedStatement statement = connection.prepareStatement(sql);
             int index = 1;
@@ -216,7 +216,7 @@ public class OrderDAO {
         return count;
     }
 
-    public List<Order> getOrdersByPage(int currentPage, int ordersPerPage, String startDate, String endDate, String salesperson, String orderStatus, Staff staff) {
+    public List<Order> getOrdersByPage(int currentPage, int ordersPerPage, String startDate, String endDate, String salesperson, String orderStatus, Staff staff, String idd, String customername) {
         List<Order> orders = new ArrayList<>();
         int start = (currentPage - 1) * ordersPerPage;
 
@@ -234,11 +234,21 @@ public class OrderDAO {
 
             if (staff.getRole() == 6) {
                 query.append(" AND o.Status IN  ");
-                query.append(String.valueOf("('Approved', 'Packaging', 'Delivering', 'Reject')"));
+                query.append(String.valueOf("('Approved', 'Packaging', 'Delivering', 'Rejected', 'Success', 'Close', 'Canceled', 'Request cancel', 'Failed')"));
+            }
+            
+            if (idd != null && !idd.isEmpty()) {
+                String condition = " AND o.[ID] = " + idd;
+                query.append(condition);
             }
 
+            if (customername != null && !customername.isEmpty()) {
+                String condition = " AND o.[Fullname] LIKE '%" + customername.trim() + "%' ";
+                query.append(condition);
+            }
+            
             if (salesperson != null && !salesperson.isEmpty()) {
-                String condition = " AND s.[fullname] LIKE '%" + salesperson + "%' ";
+                String condition = " AND s.[fullname] LIKE '%" + salesperson.trim() + "%' ";
                 query.append(condition);
             }
             if (orderStatus != null && !orderStatus.isEmpty()) {
@@ -289,7 +299,7 @@ public class OrderDAO {
         return orders;
     }
 
-    public int getTotalOrderCount(String startDate, String endDate, String salesperson, String orderStatus, Staff staff) {
+    public int getTotalOrderCount(String startDate, String endDate, String salesperson, String orderStatus, Staff staff, String id, String customerName) {
         int totalOrders = 0;
 
         try {
@@ -299,9 +309,14 @@ public class OrderDAO {
                     + "JOIN Staff s on s.ID = o.CreatedBy"
                     + " WHERE o.CreatedAt BETWEEN ? AND ?");
 
-            if (staff.getRole() != 4) {
+            if (staff.getRole() == 3) {
                 query.append(" AND o.CreatedBy = ");
                 query.append(String.valueOf(staff.getId()));
+            }
+
+            if (staff.getRole() == 6) {
+                query.append(" AND o.Status IN  ");
+                query.append(String.valueOf("('Approved', 'Packaging', 'Delivering', 'Rejected', 'Success', 'Close', 'Canceled', 'Request cancel', 'Failed')"));
             }
 
             if (salesperson != null && !salesperson.isEmpty()) {
@@ -337,11 +352,11 @@ public class OrderDAO {
     public Order getOrderById(int orderId) {
         Order order = null;
         try {
-            String sql = "SELECT * FROM [Order] WHERE ID = ?";
+            String sql = "SELECT * FROM [swp-online-shop].[dbo].[Order] WHERE ID = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, orderId);
 
-            rs = statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 order = new Order();
                 order.setId(rs.getInt("ID"));
@@ -421,6 +436,25 @@ public class OrderDAO {
         }
         return isCanceled;
     }
+    
+    
+    public boolean saleCanceledOrder(int orderId) {
+        boolean isCanceled = false;
+        try {
+            String sql = "UPDATE [Order] SET status = 'Canceled' WHERE ID = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, orderId);
+
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                isCanceled = true;
+                new ProductDAO().updateHoldQuantity(orderId, 1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isCanceled;
+    }
 
     public boolean shippingOrder(int orderId, String status) {
         boolean isCanceled = false;
@@ -433,6 +467,11 @@ public class OrderDAO {
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
                 isCanceled = true;
+            }
+            
+            if(status.equalsIgnoreCase("Delivering")) {
+                new ProductDAO().updateQuantity(orderId, 1);
+                new ProductDAO().updateHoldQuantity(orderId, 1);
             }
         } catch (SQLException e) {
             System.out.println("shippingOrder: " + e.getMessage());
@@ -471,7 +510,7 @@ public class OrderDAO {
                 + "    ON \n"
                 + "        s.ID = o.CreatedBy\n"
                 + "    WHERE \n"
-                + "        s.Role = 3\n"
+                + "        s.Role = 3 and o.Status in ('Submitted', 'Approved', 'Request Cancel', 'Packaging', 'Delivering', 'Success')\n"
                 + "    GROUP BY \n"
                 + "        s.ID, s.Fullname, s.Email\n"
                 + ")\n"
@@ -574,7 +613,7 @@ public class OrderDAO {
             preparedStatement.setString(1, status);
             preparedStatement.setInt(2, orderId);
             if (status.equalsIgnoreCase("Submitted")) {
-                new ProductDAO().updateQuantity(orderId, 1);
+                new ProductDAO().updateHoldQuantity(orderId, -1);
             }
 
             int affectedRows = preparedStatement.executeUpdate();
@@ -806,6 +845,32 @@ public class OrderDAO {
             System.out.println("getAllSale: " + e.getMessage());
         }
         return staffs;
+    }
+    
+    public List<Order> getOrdersByStatus(String status, int saleId) {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT * FROM [Order] WHERE LOWER(Status) = LOWER(?) AND CreatedBy = ?";
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, status);
+            stmt.setInt(2, saleId);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("ID"));
+                order.setUserId(rs.getInt("UserID"));
+                order.setCreatedAt(rs.getDate("CreatedAt"));
+                order.setStatus(rs.getString("Status"));
+                order.setFullname(rs.getString("Fullname"));
+                order.setPhone(rs.getString("Phone"));
+                order.setAddress(rs.getString("Address"));
+
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
     }
 
 }

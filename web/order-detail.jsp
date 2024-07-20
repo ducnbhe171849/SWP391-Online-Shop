@@ -74,11 +74,11 @@
 
                     </c:forEach>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+                    <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
-                    <p>Address: 123 Main St, Anytown, USA</p>
+                    <p>Email: fashionshop@gmail.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-9">
@@ -88,6 +88,7 @@
                 <p>Order Date: ${order.createdAt}</p>
                 <p>Total Cost: $${order.totalCost}</p>
                 <p>Status: ${order.status}</p>
+                <p>Payment Method: ${order.paymentMethod}</p>
 
                 <!-- Receiver Information -->
                 <h3>Receiver Information</h3>
@@ -121,7 +122,7 @@
                                 <td>$${product.discount != null &&  product.discount != 0 ? (product.price * (100-product.discount)/100)*(product.buyQuantity) : product.price*product.buyQuantity}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/public/product-detail?id=${product.productId}&pdid=${product.productDetailId}" class="btn btn-primary">Re-buy</a>
-                                    <c:if test="${order.status eq 'Received'}">
+                                    <c:if test="${order.status eq 'Close' && !product.isFeedbacked()}">
                                         <a href="feedback?id=${product.orderDetailId}" class="btn btn-secondary">Feedback</a>
                                     </c:if>
                                 </td>
@@ -132,16 +133,18 @@
                 <div>
                     <strong>Total Order Price:</strong> $${order.totalCost}
                 </div>
+                
+                
                 <!-- Order Actions -->
-                <c:if test="${order.status ne 'Received'}">
+                <c:if test="${order.status ne 'Close' && order.status ne 'Canceled' && order.status ne 'Failed' && order.status ne 'Success' && order.status ne 'Rejected' && order.status ne 'Delivering'}">
                     <div class="mt-4">
                     <a href="cancel-order?orderId=${order.id}" class="btn btn-danger">Cancel Order</a>
                 </div>
                 </c:if>
-                
+
             </div>
         </div>
-                    <jsp:include page="footer.html"></jsp:include>
+        <jsp:include page="footer.html"></jsp:include>
     </body>
 </html>
 

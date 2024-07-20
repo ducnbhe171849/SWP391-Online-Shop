@@ -18,17 +18,17 @@
         <!-- Sidebar -->
         <%@ include file="admin-sidebar.jsp" %>
 
-        <div class="container mt-5 main-content">
+        <div class="mt-5 main-content">
             <h2>Setting List</h2>
 
             <c:if test="${param.success ne null}">
                 <div class="alert alert-success" role="alert">
-                    Update success!
+                    Success!
                 </div>
             </c:if>
             <c:if test="${param.fail ne null}">
                 <div class="alert alert-danger" role="alert">
-                    Update failed!
+                    Failed!
                 </div>
             </c:if>
 
@@ -44,6 +44,12 @@
                 </select>
             </div>
 
+            <!-- Name Search -->
+            <div class="mb-3 mt-2">
+                <label for="nameSearch">Search by Type:</label>
+                <input type="text" id="nameSearch" class="form-control" style="width: auto; display: inline-block;" placeholder="Enter name">
+            </div>
+
             <table id="settingTable" class="table table-striped">
                 <thead>
                     <tr>
@@ -51,7 +57,6 @@
                         <th>Type</th>
                         <th>Value</th>
                         <th>Order</th>
-                        <th>Description</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -63,7 +68,6 @@
                             <td>${setting.getType()}</td>
                             <td>${setting.getValue()}</td>
                             <td>${setting.getOrder()}</td>
-                            <td>${setting.getDescription()}</td>
                             <td>${setting.isDeleted ? 'Inactive' : 'Active'}</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editSettingModal_${setting.getID()}">Edit</button>
@@ -75,7 +79,7 @@
                 </tbody>
             </table>
 
-            <nav aria-label="Page navigation">
+<!--            <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item">
                         <a class="page-link" href="?page=1" aria-label="Previous">
@@ -93,7 +97,7 @@
                         </a>
                     </li>
                 </ul>
-            </nav>
+            </nav>-->
         </div>
 
         <!--edit modal-->
@@ -190,8 +194,9 @@
 
         <script>
             $(document).ready(function () {
-                var table = $('#settingTable').DataTable({
-                    "paging": false,
+                let table = $('#settingTable').DataTable({
+                    "paging": true,
+                    "pageLength": 5,
                     "lengthChange": false,
                     "searching": true,
                     "ordering": true,
@@ -199,14 +204,20 @@
                     "autoWidth": false
                 });
 
+                $('#nameSearch').on('keyup', function () {
+                    table.columns(1).search(this.value).draw();
+                });
+
                 $('#statusFilter').on('change', function () {
                     var selectedStatus = $(this).val();
                     if (selectedStatus) {
-                        table.columns(5).search('^' + selectedStatus + '$', true, false).draw();
+                        table.columns(4).search('^' + selectedStatus + '$', true, false).draw();
                     } else {
-                        table.columns(5).search('').draw();
+                        table.columns(4).search('').draw();
                     }
                 });
+                
+                 $('#settingTable_wrapper .dataTables_filter').addClass('d-none');
             });
         </script>
 

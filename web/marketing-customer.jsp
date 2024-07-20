@@ -29,18 +29,18 @@
         <!-- Sidebar -->
         <%@ include file="marketing-sidebar.jsp" %>
 
-        <div class="container mt-5 main-content">
+        <div class="mt-5 main-content">
             <h2>User List</h2>
 
 
             <c:if test="${param.success ne null}">
                 <div class="alert alert-success" role="alert">
-                    Update success!
+                    Success!
                 </div>
             </c:if>
             <c:if test="${param.fail ne null}">
                 <div class="alert alert-danger" role="alert">
-                    Update failed!
+                    Failed!
                 </div>
             </c:if>
 

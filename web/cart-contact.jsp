@@ -4,7 +4,7 @@
 <html>
 
     <head>
-        <title>Shopping Cart</title>
+        <title>Cart Contact</title>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
         <style>
             #product:hover, #product *:hover {
@@ -80,16 +80,16 @@
 
                     </c:forEach>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+                  <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
-                    <p>Address: 123 Main St, Anytown, USA</p>
+                    <p>Email: fashionshop@gmail.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-10">
 
-                <h2>Shopping Cart</h2>
+                <h2>Orders Products</h2>
                 <table class="table">
                     <thead>
                         <tr>
@@ -195,11 +195,28 @@
                             <td><input type="text" class="form-control" name="notes" value=""></td> 
                         </tr>
                         <tr>
+                            <td>Payment method:</td>
+                            <td>
+                                <input type="radio" name="method" value="VNPAY" checked> VNPAY <br>
+                                <input type="radio" name="method" value="Tranfer1"> Tranfer <br/>
+<!--                                <div> 
+                                    <ul>
+                                        <li><strong>STK: </strong> 01239817231123</li>
+                                        <li> <strong>BANK: </strong>MB Bank - HA NOI</li>
+                                        <li><strong>OWNER: </strong>Fashion shop</li>
+                                    </ul>
+                                </div> -->
+                                        <input type="radio"  name="method" value="COD" ${setting ne null && totalPrice > setting.value  ? "disabled" : ""}> COD 
+                                        <c:if test="${totalPrice > setting.value && !setting.isDeleted}">(Order > ${setting.value}$ is not allow for COD)</c:if>
+                            </td> 
+                        </tr>
+                        <tr>
                             <td colspan="2">
                                 <a href="cart"  class="btn btn-secondary">Change</a>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </td>
                         </tr>
+                        
                     </table>
 
 

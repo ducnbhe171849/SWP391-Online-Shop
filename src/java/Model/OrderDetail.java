@@ -32,8 +32,6 @@ public class OrderDetail {
     public int getQuantity() {
         return quantity;
     }
-    
-    
 
     public int getId() {
         return id;
@@ -87,5 +85,8 @@ public class OrderDetail {
         return new OrderDAO().getOrderById(orderId);
     }
     
+    public ProductDetail getDetail() {
+        return new ProductDAO().getProductDetailById(productDetailId);
+    }
 
 }

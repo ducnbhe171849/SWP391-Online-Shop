@@ -80,23 +80,23 @@
 
                     </c:forEach>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+                 <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
-                    <p>Address: 123 Main St, Anytown, USA</p>
+                    <p>Email: fashionshop@gmail.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-10">
                 <c:if test="${isSuccess ne null && isSuccess}">
                     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
-                        <strong>Save success!</strong> You should check in on some of those fields below.   
+                        <strong>Order successfully received!</strong> You should check in on some of those fields below.   
                         <button type="button" class="btn-close"  onclick="document.getElementById('mess').style.display = 'none'"></button>
                     </div>
                 </c:if>
                 <c:if test="${isSuccess ne null && !isSuccess}">
                     <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="mess">
-                        <strong>Save failed!</strong> You should check your network.
+                        <strong>Order failed to receive!</strong> You should check your network.
                         <button type="button" class="btn-close"  onclick="document.getElementById('mess').style.display = 'none'"></button>
                     </div>
                 </c:if>
@@ -135,7 +135,7 @@
                                 <td>
                                     <form action="update-cart" method="post" style="display:inline;">
                                         <input type="hidden" name="cartId" value="${item.id}">
-                                        <input type="number" name="quantity" value="${item.quantity}" min="1"
+                                        <input type="number"  name="quantity" value="${item.quantity}" min="1" max="${item.productDetail.stock}"
                                                class="form-control" style="width: 80px; display:inline;">
                                         <button type="submit" class="btn btn-sm btn-primary">Update</button>
                                     </form>
@@ -151,7 +151,7 @@
                                 <td>
                                     <form action="delete-cart" method="post" style="display:inline;">
                                         <input type="hidden" name="cartId" value="${item.id}">
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                                     </form>
                                 </td>
                             </tr>

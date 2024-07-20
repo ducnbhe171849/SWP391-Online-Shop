@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Marketing Dashboard</title>
+        <title>Inventory Order List</title>
         <!-- Bootstrap CSS -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <!-- Font Awesome CSS for icons -->
@@ -19,17 +19,17 @@
         <%@ include file="inventory-sidebar.jsp" %>
 
         <!-- Main content -->
-        <div class="main-content container text-center" style="margin-top: 10%">
-            <h2>My Orders</h2>
+        <div class="main-content text-center" style="margin-top: 10%">
+            <h2>Orders List</h2>
             <c:if test="${isSuccess ne null && isSuccess}">
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="mess">
-                    <strong>Save success!</strong> You should check in on some of those fields below.
+                    <strong>Update order success!</strong> You should check in on some of those fields below.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('mess').style.display = 'none'"></button>
                 </div>
             </c:if>
             <c:if test="${isSuccess ne null && !isSuccess}">
                 <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="mess">
-                    <strong>Save failed!</strong> You should check your network.
+                    <strong>Update order failed!</strong> You should check your network.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </c:if>
@@ -48,7 +48,14 @@
                         <select id="orderStatus" name="orderStatus" class="form-control">
                             <option value="" ${param.orderStatus == null ? 'selected' : ''}>All</option>
                             <option value="Approved" ${param.orderStatus == 'Approved' ? 'selected' : ''}>Approved</option>
-                            <option value="Shipping" ${param.orderStatus == 'Shipping' ? 'selected' : ''}>Shipping</option>
+                            <option value="Delivering" ${param.orderStatus == 'Delivering' ? 'selected' : ''}>Delivering</option>
+                            <option value="Packaging" ${param.orderStatus == 'Packaging' ? 'selected' : ''}>Packaging</option>
+                            <option value="Close" ${param.orderStatus == 'Close' ? 'selected' : ''}>Close</option>
+                            <option value="Failed" ${param.orderStatus == 'Failed' ? 'selected' : ''}>Failed</option>
+                            <option value="Submitted" ${param.orderStatus == 'Submitted' ? 'selected' : ''}>Submitted</option>
+                            <option value="Success" ${param.orderStatus == 'Success' ? 'selected' : ''}>Success</option>
+                            <option value="Request Cancel" ${param.orderStatus == 'Request Cancel' ? 'selected' : ''}>Request Cancel</option>
+                            <option value="Canceled" ${param.orderStatus == 'Canceled' ? 'selected' : ''}>Canceled</option>
                         </select>
                     </div>
                     <div class="col-3 mt-3">
@@ -68,6 +75,7 @@
                         <th>Phone</th>
                         <th>Total</th>
                         <th>Status</th>
+                        <th>Payment Method</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -82,12 +90,17 @@
                             <td>${item.phone}</td>
                             <td>$${item.totalCost}</td>
                             <td>${item.status}</td>
+                            <td>${item.paymentMethod}</td>
                             <td>
                                 <c:if test="${item.status eq 'Approved'}">
-                                    <a href="shipping-order?orderId=${item.id}&status=Boxed" class="btn btn-primary">Boxed</a>
+                                    <a href="shipping-order?orderId=${item.id}&status=Packaging" class="btn btn-primary">Packaging</a>
                                 </c:if>
-                                    <c:if test="${item.status eq 'Boxed'}">
-                                    <a href="shipping-order?orderId=${item.id}&status=Shipping" class="btn btn-primary">Shipping</a>
+                                <c:if test="${item.status eq 'Packaging'}">
+                                    <a href="shipping-order?orderId=${item.id}&status=Delivering" class="btn btn-primary">Delivering</a>
+                                </c:if>
+                                <c:if test="${item.status eq 'Delivering'}">
+                                    <a href="shipping-order?orderId=${item.id}&status=Success" class="btn btn-success">Success</a>
+                                    <a href="shipping-order?orderId=${item.id}&status=Failed" class="btn btn-danger">Failed</a>
                                 </c:if>
                             </td>
                         </tr>

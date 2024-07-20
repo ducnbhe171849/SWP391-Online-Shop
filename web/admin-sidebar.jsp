@@ -38,6 +38,17 @@
     /* Main content style */
     .main-content {
         padding-left: 11%;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .sidebar ul.logout {
+        margin-top: auto;
     }
 </style>
 
@@ -45,7 +56,11 @@
 <nav class="sidebar">
     <ul>
         <li><a href="dashboard"><i class="fas fa-tachometer-alt mr-2"></i>Dashboard</a></li>
-        <li><a href="user"><i class="fas fa-users mr-2"></i>Customers</a></li>
+        <li><a href="user"><i class="fas fa-users mr-2"></i>Staffs</a></li>
         <li><a href="setting"><i class="fas fa-cog mr-2"></i>Settings</a></li>
+    </ul>
+    <ul class="logout">
+        <li class="text-light"><i class="fas fa-users mr-2"></i>${sessionScope.staff.fullname}</li>
+        <li><a href="../login-staff"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a></li>
     </ul>
 </nav>

@@ -57,10 +57,11 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="static-contacts" style="margin-top: 15px">
+                  <div id="static-contacts" style="margin-top: 15px">
                     <h3>Contact Us</h3>
-                    <p>Email: contact@example.com</p>
-                    <p>Phone: 123-456-7890</p>
+                    <p>Email: fashionshop@gmail.com.com</p>
+                    <p>Phone: 0394726789</p>
+                    <p>Address: Ha Noi, Viet Nam</p>
                 </div>
             </div>
             <div class="col-md-10 p-3">

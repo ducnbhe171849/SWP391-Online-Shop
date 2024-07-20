@@ -18,18 +18,18 @@
         <!-- Sidebar -->
         <%@ include file="admin-sidebar.jsp" %>
 
-        <div class="container mt-5 main-content">
-            <h2>User List</h2>
+        <div class="mt-5 main-content">
+            <h2>Staff List</h2>
 
 
             <c:if test="${param.success ne null}">
                 <div class="alert alert-success" role="alert">
-                    Update success!
+                    Success!
                 </div>
             </c:if>
             <c:if test="${param.fail ne null}">
                 <div class="alert alert-danger" role="alert">
-                    Update failed!
+                    Failed!
                 </div>
             </c:if>
 
@@ -46,7 +46,7 @@
                 <div class="form-group mr-2">
                     <input type="text" class="form-control" name="phone" placeholder="Phone">
                 </div>
-                
+
                 <div class="form-group mr-2">
                     <select class="form-control" name="role">
                         <option value="">Select Role</option>
@@ -54,6 +54,7 @@
                         <option value="2">Marketing</option>
                         <option value="3">Sale</option>
                         <option value="4">Sale leader</option>
+                        <option value="6">Inventory</option>
                     </select>
                 </div>
                 <div class="form-group mr-2">
@@ -63,7 +64,14 @@
                         <option value="Female">Female</option>
                     </select>
                 </div>
-                
+                <div class="form-group mr-2">
+                    <select class="form-control" name="status">
+                        <option value="">Select Status</option>
+                        <option value="false">Active</option>
+                        <option value="true">Inactive</option>
+                    </select>
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3">Search</button>
             </form>
 
@@ -143,11 +151,11 @@
                                 <input type="hidden" name="userId" value="${user.id}">
                                 <div class="form-group">
                                     <label for="fullName">Full Name</label>
-                                    <input type="text" class="form-control" id="fullName" name="fullName" value="${user.fullname}">
+                                    <input type="text" class="form-control" id="fullName" name="fullName" value="${user.fullname}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="${user.getEmail()}">
+                                    <input type="email" class="form-control" id="email" name="email" value="${user.getEmail()}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="role">Role</label>
@@ -155,22 +163,30 @@
                                         <option value="1" ${user.roleString eq "Admin" ? "selected" : ""}>Admin</option>
                                         <option value="2" ${user.roleString eq "Marketing" ? "selected" : ""}>Marketing</option>
                                         <option value="3" ${user.roleString eq "Sale" ? "selected" : ""}>Sale</option>
+                                        <option value="4" ${user.roleString eq "SaleLeader" ? "selected" : ""}>Sale leader</option>
+                                        <option value="6" ${user.roleString eq "Inventory" ? "selected" : ""}>Inventory</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="gender">Gender</label>
-                                    <select class="form-control" id="gender" name="gender">
+                                    <select class="form-control" id="gender" name="gender" readonly>
                                         <option value="true" ${user.gender eq 'Male' ? "selected" : ""}>Male</option>
                                         <option value="false" ${user.gender eq 'Female' ? "selected" : ""}>Female</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="address">Address</label>
-                                    <input type="text" class="form-control" id="address" name="address" value="${user.getAddress()}">
+                                    <input type="text" class="form-control" id="address" name="address" value="${user.getAddress()}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="phone">Phone</label>
-                                    <input type="text" class="form-control" id="phone" name="phone" value="${user.getPhone()}">
+                                    <input type="text" class="form-control" id="phone" name="phone" value="${user.getPhone()}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="imageUrl">Image</label>
+                                    <img id="image${user.id}" class="w-100" src="${user.avatar}">
+                                    <input type="file" class="form-control" id="imageFile${user.id}" accept="image/*" onchange="updateImage(${user.id})">
+                                    <input type="hidden" class="form-control" id="imageUrl${user.id}" name="imageUrl" value="${user.avatar}">
                                 </div>
                                 <div class="form-group">
                                     <label for="status">Status</label>
@@ -252,6 +268,8 @@
                                     <option value="1">Admin</option>
                                     <option value="3">Sale</option>
                                     <option value="2">Marketing</option>
+                                    <option value="4">Sale leader</option>
+                                    <option value="6">Inventory</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -268,6 +286,12 @@
                             <div class="form-group">
                                 <label for="phone">Phone</label>
                                 <input type="text" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="imageUrl">Image</label>
+                                <img id="image0" class="w-100" src="">
+                                <input type="file" class="form-control" id="imageFile0" accept="image/*" onchange="updateImage(0)" required>
+                                <input type="hidden" class="form-control" id="imageUrl0" name="imageUrl" value="">
                             </div>
                             <button type="submit" class="btn btn-primary">Add User</button>
                         </form>
@@ -286,16 +310,50 @@
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
 
         <script>
-            $(document).ready(function () {
-                $('#userTable').DataTable({
-                    "paging": false,
-                    "lengthChange": false,
-                    "searching": false,
-                    "ordering": true,
-                    "info": false,
-                    "autoWidth": false
-                });
-            });
+                                    $(document).ready(function () {
+                                        $('#userTable').DataTable({
+                                            "paging": false,
+                                            "lengthChange": false,
+                                            "searching": false,
+                                            "ordering": true,
+                                            "info": false,
+                                            "autoWidth": false
+                                        });
+                                    });
+        </script>
+
+        <script>
+            function updateImage(sliderId) {
+                let fileInput = document.getElementById(`imageFile` + sliderId);
+                let image = document.getElementById(`image` + sliderId);
+                let hiddenInput = document.getElementById(`imageUrl` + sliderId);
+                console.log(fileInput, image, hiddenInput)
+
+                // check file uploaded
+                if (fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const maxSize = 2 * 1024 * 1024; // 2 MB in bytes
+
+                    if (file.size > maxSize) {
+                        alert("The selected file is too large. Please select a file smaller than 2 MB.");
+                        fileInput.value = ''; // Clear the file input
+                        return;
+                    }
+
+                    // dịch image thành url
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Update the image src
+                        image.src = e.target.result;
+
+                        // Optionally, update the hidden input with the base64 data URL
+                        hiddenInput.value = e.target.result;
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            }
         </script>
 
     </body>

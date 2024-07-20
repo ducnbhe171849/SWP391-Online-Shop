@@ -157,13 +157,18 @@
                 var fullNameInput = document.getElementById('fullName');
                 var fullNameError = document.getElementById('fullNameError');
 
-                if (fullNameInput.value.trim().length < 8) {
+                var specialCharOrNumberPattern = /[0-9!@#$%^&*(),.?":{}|<>]/;
+
+                if (specialCharOrNumberPattern.test(fullNameInput.value)) {
+                    fullNameError.textContent = 'Full Name must not contain numbers or special characters';
+
+                } else if (fullNameInput.value.trim().length < 8) {
                     fullNameError.textContent = 'Full Name must be more than 8 characters';
                 } else {
                     fullNameError.textContent = '';
                 }
             }
-
+            
             function validateEmail() {
                 var emailInput = document.getElementById('email');
                 var emailError = document.getElementById('emailError');

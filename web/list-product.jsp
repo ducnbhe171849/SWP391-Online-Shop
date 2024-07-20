@@ -1,8 +1,3 @@
-<%-- 
-    Document   : Home
-    Created on : Jan 7, 2024, 9:04:10 PM
-    Author     : Admin
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -59,6 +54,10 @@
             .size:hover {
                 cursor: pointer;
                 background-color: #555252
+            }
+            .images{
+                height:280px;
+                object-fit: cover;
             }
         </style>
     </head>
@@ -118,23 +117,23 @@
                                 </c:if>
 
                                 <!-- Product image-->
-                                <img class="card-img-top" src="${p.productDetail.imageURL}" alt="..." />
+                                <img class="images card-img-top" src="${p.productDetail.imageURL}" alt="..." />
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
                                         <!-- Product name-->
                                         <h5 class="fw-bolder">${p.productName}</h5>
                                         <!-- Product reviews-->
-                                        <div class="d-flex justify-content-center small text-warning mb-2">
+<!--                                        <div class="d-flex justify-content-center small text-warning mb-2">
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
                                             <div class="bi-star-fill"></div>
-                                        </div>
+                                        </div>-->
                                         <!-- Product price-->
-                                        <span class="text-muted text-decoration-line-through">$20.00</span>
-                                        $${p.productDetail.price}
+                                        <span class="text-muted text-decoration-line-through">${p.productDetail.price}$</span>
+                                        <b style="color:red">${p.productDetail.price * (1 - p.productDetail.discount/100)}$</b>
                                     </div>
                                 </div>
                                 <!-- Product actions-->

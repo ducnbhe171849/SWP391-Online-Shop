@@ -20,17 +20,17 @@
         <!-- Sidebar -->
         <%@ include file="marketing-sidebar.jsp" %>
 
-        <div class="container mt-5 main-content">
+        <div class="mt-5 main-content">
             <h2>Feedback List</h2>
 
             <c:if test="${param.success ne null}">
                 <div class="alert alert-success" role="alert">
-                    Update success!
+                    Success!
                 </div>
             </c:if>
             <c:if test="${param.fail ne null}">
                 <div class="alert alert-danger" role="alert">
-                    Update failed!
+                    Failed!
                 </div>
             </c:if>
 
@@ -58,8 +58,8 @@
                 <div class="form-group mr-2">
                     <select class="form-control" name="status">
                         <option value="">Select Status</option>
-                        <option value="true" ${isDeleted ? 'selected' : ''}>Inactive</option>
-                        <option value="false" ${!isDeleted ? 'selected' : ''}>Active</option>
+                        <option value="true" ${isDeleted eq 'true' ? 'selected' : ''}>Inactive</option>
+                        <option value="false" ${isDeleted eq 'false' ? 'selected' : ''}>Active</option>
                     </select>
                 </div>
                 <input type="hidden" name="page" id="pageInput" value="1">
