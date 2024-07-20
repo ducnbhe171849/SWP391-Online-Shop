@@ -6,10 +6,9 @@
 package Controller;
 
 import DAO.OrderDAO;
-import DAO.PostDAO;
-import Model.Category;
+import DAO.ProductDAO;
 import Model.Order;
-import Model.Staff;
+import Utils.EmailService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,14 +16,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
  * @author Legion
  */
-@WebServlet(name="InventoryOrderController", urlPatterns={"/inventory/list-order"})
-public class InventoryOrderController extends HttpServlet {
+@WebServlet(name="ApproveOrderController", urlPatterns={"/sale/approve-order"})
+public class ApproveOrderController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +39,10 @@ public class InventoryOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet InventoryOrderController</title>");  
+            out.println("<title>Servlet ApproveOrderController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet InventoryOrderController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ApproveOrderController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,43 +59,22 @@ public class InventoryOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        int orderId = Integer.parseInt(request.getParameter("orderId")); 
+        String status = request.getParameter("status");
         OrderDAO orderDAO = new OrderDAO();
-
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        String salesperson = request.getParameter("salesperson");
-        String orderStatus = request.getParameter("orderStatus");
-
-        int currentPage = 1;
-        int ordersPerPage = 10;
-
-        if (request.getParameter("page") != null) {
-            currentPage = Integer.parseInt(request.getParameter("page"));
+        Order order = orderDAO.getOrderById(orderId);
+        boolean isSuccess = orderDAO.updateOrderStatus(status, orderId);
+        if(status.equalsIgnoreCase("Rejected")) {
+            new ProductDAO().updateHoldQuantity(orderId, 1);
+            EmailService.sendEmail(order.getUser().getEmail(), "Confirm Card", "Your order " + order.getId() + "was rejected!");
         }
-        
-        if(startDate == null || startDate.isEmpty()) {
-            startDate = "1990-01-01";
+        if(status.equalsIgnoreCase("approved")) {
+            if(order.getPaymentMethod().equalsIgnoreCase("COD") || order.getPaymentMethod().equalsIgnoreCase("tranfer")) {
+                EmailService.sendEmail(order.getUser().getEmail(), "Thanks Card", "Thanks for trying our product, we have received your order by " + order.getPaymentMethod());
+            }
         }
-        
-        if(endDate == null || endDate.isEmpty()) {
-            endDate = "9999-01-01";
-        }
-        
-        Staff staff = (Staff) request.getSession().getAttribute("staff");
-        
-        List<Order> orders = orderDAO.getOrdersByPage(currentPage, ordersPerPage, startDate, endDate, salesperson, orderStatus, staff, null, null);
-        List<Category> categories = new PostDAO().getUniqueCategories();
-        int totalOrders = orderDAO.getTotalOrderCount(startDate, endDate, salesperson, orderStatus, staff, null, null);
-        int totalPages = (int) Math.ceil((double) totalOrders / ordersPerPage);
-        System.out.println("totalOrders: " + totalOrders);
-        request.setAttribute("orders", orders);
-        request.setAttribute("categories", categories);
-        request.setAttribute("totalOrders", totalOrders);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("currentPage", currentPage);
         request.setAttribute("isSuccess", request.getParameter("isSuccess"));
-
-        request.getRequestDispatcher("/inventory-order.jsp").forward(request, response);
+        response.sendRedirect("order-detail?isSuccess=" + isSuccess + "&orderId="+orderId);
     } 
 
     /** 
