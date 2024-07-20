@@ -6,6 +6,7 @@ package Controller;
 
 import DAO.CartDAO;
 import DAO.OrderDAO;
+import DAO.ProductDAO;
 import Model.Cart;
 import Model.Order;
 import Model.OrderDetail;
@@ -39,10 +40,18 @@ import com.google.gson.Gson;
 public class PaymentController extends HttpServlet {
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
+    
+    
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse respone) throws ServletException, IOException {
 
         String amount_raw = request.getParameter("amount");
-        int amount = Integer.parseInt(request.getParameter("amount").substring(0, amount_raw.length() - 2)) * 100 * 25000;
+        double amount_d = Double.parseDouble(amount_raw);
+        int amount = (int) amount_d * 100 * 25000;
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_OrderInfo = "pay pay";
@@ -111,6 +120,12 @@ public class PaymentController extends HttpServlet {
 
         //Section : Add new payment
         //Get user payment
+        String method = request.getParameter("method");
+        if(method.equalsIgnoreCase("tranfer1")) {
+            respone.sendRedirect("tranfer-commit");
+            return;
+        }
+
         User user = (User) request.getSession().getAttribute("user");
         //Create bill
         String fullname = request.getParameter("fullname");
@@ -123,12 +138,27 @@ public class PaymentController extends HttpServlet {
         order.setAddress(address);
         order.setPhone(phone);
         order.setNotes(notes);
+        if (method.equalsIgnoreCase("vnpay") || method.equalsIgnoreCase("repay") || method.equalsIgnoreCase("COD")) {
+            order.setFullname(user.getFullname());
+            order.setAddress(user.getAddress());
+            order.setPhone(user.getPhone());
+            order.setNotes(notes);
+        }
+        order.setStatus(method.equalsIgnoreCase("vnpay") ? "Wait for pay" : "Submitted");
+        order.setPaymentMethod(method);
         order.setUserId(user.getId());
-        int orderId = new OrderDAO().createOrder(order);
+        int orderId = 0;
+        if(request.getParameter("orderId") != null && !request.getParameter("orderId").isEmpty()) {
+           orderId = Integer.parseInt(request.getParameter("orderId"));
+        }
+         
+        if (method.equalsIgnoreCase("vnpay") || method.equalsIgnoreCase("COD") || method.equalsIgnoreCase("tranfer")) {
+            orderId = new OrderDAO().createOrder(order);
+        }
+        
         Config.orderID = orderId;
         // Retrieve cart items from session or request (assuming a method getCartItems exists)
         List<Cart> cartItems = new CartDAO().getAllCarts(user.getId());
-        System.out.println("orderId: " + orderId);
         // Insert Order Details
         if (request.getParameter("mode") != null) {
             int productDetailId = Integer.parseInt(request.getParameter("productdetailId"));
@@ -146,11 +176,19 @@ public class PaymentController extends HttpServlet {
                 orderDetail.setProductDetailId(cartItem.getProductDetailId());
                 orderDetail.setQuantity(cartItem.getQuantity());
                 new OrderDAO().createOrderDetail(orderDetail);
+                if(method.equalsIgnoreCase("COD") || method.equalsIgnoreCase("tranfer")) {
+                    new ProductDAO().updateProductDetailHold(cartItem.getProductDetailId(), -cartItem.getQuantity());
+                }
             }
             new CartDAO().clearCart(user.getId());
         }
-       
-        respone.sendRedirect(paymentUrl);
+
+        if (method.equalsIgnoreCase("vnpay") || method.equalsIgnoreCase("repay")) {
+            respone.sendRedirect(paymentUrl);
+        } else {
+            respone.sendRedirect("../customer/my-order");
+        }
+
     }
 
 }
